@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <item
+      android:color="@color/blue"
+      android:state_active="true"/>
+
+    <item android:color="@color/borderGrey"
+        android:state_active="false"/>
+
+
+
+
+    <!--<item android:state_focused="true" android:color="@color/blue" android:drawable="@drawable/edittext_grey_border"/>
+    <item android:state_enabled="true" android:color="@color/borderGrey" android:drawable="@drawable/edittext_grey_border"/>
+    <item android:state_hovered="true" android:color="@color/blue" android:drawable="@drawable/edittext_grey_border"/>
+    <item android:color="@color/borderGrey"/>-->
+</selector>

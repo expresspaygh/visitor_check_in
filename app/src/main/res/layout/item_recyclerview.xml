@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+   <com.github.ivbaranov.mli.MaterialLetterIcon
+       android:id="@+id/letterIcon"
+       android:layout_width="50dp"
+       android:layout_height="50dp"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       android:layout_marginTop="10dp"
+       android:layout_marginStart="15dp"
+       android:layout_marginLeft="15dp"/>
+
+
+    <LinearLayout
+        android:id="@+id/LinearLayout"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/letterIcon"
+        app:layout_constraintTop_toTopOf="@id/letterIcon"
+        app:layout_constraintBottom_toBottomOf="@id/letterIcon"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        >
+
+        <TextView
+            android:id="@+id/fullName_tv"
+            android:layout_width="150sp"
+            android:layout_height="25sp"
+            android:text=" "
+            android:layout_marginTop="30sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/checked_time_tv"
+            android:layout_width="200sp"
+            android:layout_height="25sp"
+            android:hint="Checked"/>
+    </LinearLayout>
+
+
+
+
+
+    <ImageView
+        android:id="@+id/user-x"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_user_x"
+        app:layout_constraintTop_toTopOf="@id/LinearLayout"
+        app:layout_constraintBottom_toBottomOf="@id/LinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="15sp"
+        android:tint="@android:color/black"
+        android:layout_marginRight="15sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

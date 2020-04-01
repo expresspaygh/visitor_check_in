@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Guest Check-In Application</string>
+    <string name="checked_in">No Checked In Guest</string>
+    <string name="button_check_in">Tab the button to check in a guest</string>
+    <string name="visitor">Visitor Details</string>
+    <string name="next_step">Next Step</string>
+    <string name="full_name">Full Name</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="passnumber">Pass Number</string>
+    <string name="pass_num">Pass number</string>
+    <string name="check_in_btn">Check In</string>
+    <string name="staff_member">Staff Member</string>
+    <string name="here_to_see">Here to See</string>
+    <string name="other_reason">Other Reason</string>
+    <string name="purpose_of_visit">PURPOSE OF VISIT</string>
+    <string name="personal">Personal</string>
+    <string name="official">Official</string>
+    <string name="title_activity_populated_guest_check_in">PopulatedGuestCheckIn</string>
+    <string name="checked_out">Checked Out</string>
+    <string name="number">Phone Number</string>
+    <string name="other">Other</string>
+    <string name="search_for_a_guest">Search for a guest</string>
+
+
+</resources>
