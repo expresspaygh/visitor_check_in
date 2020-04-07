@@ -3,6 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selected_name_layout"/>
+
     <LinearLayout
         android:id="@+id/selected_name_layout"
         android:layout_width="match_parent"
@@ -11,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="25sp">
+        android:padding="20sp">
 
         <TextView
             android:id="@+id/selectedName"
@@ -20,6 +29,9 @@
             android:layout_marginRight="150sp"
             android:textStyle="bold"
             android:textColor="@color/grey"
+            android:textSize="50px"
+            android:gravity="start"
+            android:textAlignment="textStart"
 
             />
 
@@ -34,6 +46,15 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checked_time_layout"/>
+
     <LinearLayout
         android:id="@+id/checked_time_layout"
         android:layout_width="match_parent"
@@ -41,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@id/selected_name_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="20sp"
+        android:padding="12sp"
         >
 
         <TextView
@@ -66,6 +87,16 @@
             android:gravity="end" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/staff_name_layout"/>
+
+
     <LinearLayout
         android:id="@+id/staff_name_layout"
         android:layout_width="match_parent"
@@ -73,7 +104,7 @@
         app:layout_constraintTop_toBottomOf="@id/checked_time_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="20sp"
+        android:padding="12sp"
         >
 
         <TextView
@@ -96,6 +127,16 @@
             android:gravity="end" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/purpose_layout"/>
+
+
     <LinearLayout
         android:id="@+id/purpose_layout"
         android:layout_width="match_parent"
@@ -103,7 +144,7 @@
         app:layout_constraintTop_toBottomOf="@id/staff_name_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="20sp"
+        android:padding="12sp"
 
         >
 
@@ -131,6 +172,14 @@
     </LinearLayout>
 
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pass_num_Layout"/>
 
     <LinearLayout
         android:id="@+id/pass_num_Layout"
@@ -139,7 +188,7 @@
         app:layout_constraintTop_toBottomOf="@id/purpose_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="20sp"
+        android:padding="12sp"
         >
 
         <TextView
@@ -162,6 +211,16 @@
             android:textColor="@color/grey"
             android:gravity="end" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checked_out_btn"/>
+
 
     <Button
         android:id="@+id/checked_out_btn"
