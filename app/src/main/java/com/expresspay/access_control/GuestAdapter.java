@@ -15,12 +15,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.expresspay.access_control.models.GuestData;
 import com.github.ivbaranov.mli.MaterialLetterIcon;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.zip.Inflater;
 
 import io.realm.Realm;
 
@@ -41,6 +46,8 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.ViewHolder> 
     private FragmentActivity context;
 
     private GuestCheckedInData selectedGuest;
+
+    ViewHolder viewHolder;
 
     private int[] arrayColor = {R.color.violet, R.color.lemon, R.color.brown, R.color.light_green, R.color.light_blue, R.color.blue, R.color.deep_green, R.color.orange};
 
@@ -56,7 +63,8 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recyclerview, parent, false);
-        return new ViewHolder(view);
+        viewHolder = new ViewHolder(view);
+        return viewHolder;
     }
 
 
@@ -104,7 +112,26 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.ViewHolder> 
             imageViewUser_x = itemView.findViewById(R.id.user_x);
 
 
+
             itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                  selectedGuest = guestDataList.get(getAdapterPosition());
+                  if(!selectedGuest.isCheckedOut()){
+
+                        showButtomSheetDialogFragment();
+                  }
+                  else {
+
+                  }
+
+
+
+                }
+            });
+
+            imageViewUser_x.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //save an instance of the guest the user selects
@@ -122,8 +149,14 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.ViewHolder> 
             });
         }
 
+        //function to show the bottom sheet dialog fragment(ie. VisitorInfoFragment)
+        public void showButtomSheetDialogFragment(){
+            VisitorInfoFragmnt visitorInfoFragmnt = new VisitorInfoFragmnt(selectedGuest,viewHolder);
+            visitorInfoFragmnt.show(context.getSupportFragmentManager(),visitorInfoFragmnt.getTag());
+            notifyDataSetChanged();
+        }
         //function to update the database
-        private void updateCheckedInGuests(final GuestCheckedInData selectedGuest,final boolean undo){
+        public void updateCheckedInGuests(final GuestCheckedInData selectedGuest,final boolean undo){
             Realm realm = Realm.getDefaultInstance();
 
             //Asynchronously update objects on a background thread

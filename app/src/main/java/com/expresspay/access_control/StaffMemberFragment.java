@@ -37,7 +37,7 @@ public class StaffMemberFragment extends Fragment {
     private String purpose;
 
 
-    private static final String PERSONAL = "Person";
+    private static final String PERSONAL = "Personal";
     private static final String OFFICIAL = "Official";
     private static final String OTHER = "Other";
 
