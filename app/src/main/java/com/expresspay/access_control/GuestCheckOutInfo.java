@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class GuestCheckOutInfo extends BottomSheetDialogFragment {
-    private TextView selectedName,checkOutTime,staffName,purpose,passNum;
+    private TextView selectedName,checkInTime,checkOutTime,staffName,purpose,passNum;
     private ImageButton cancel;
     private GuestCheckedInData selectedGuest;
 
@@ -38,6 +38,7 @@ public class GuestCheckOutInfo extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.guest_checkout_info,container,false);
         selectedName = view.findViewById(R.id.selectedName);
+        checkInTime = view.findViewById(R.id.checkedIn_time_tv);
         checkOutTime = view.findViewById(R.id.checkedOut_time_tv);
         staffName = view.findViewById(R.id.staff_name_tv);
         purpose = view.findViewById(R.id.purpose_tv);
@@ -62,8 +63,10 @@ public class GuestCheckOutInfo extends BottomSheetDialogFragment {
 
     public void settingFields(){
         String formattedTime = formatTime((selectedGuest.getCheckedOutTime()));
+        String formatTime = formatTime(selectedGuest.getCheckedInTime());
 
         selectedName.setText(selectedGuest.getVisitorName());
+        checkInTime.setText(formatTime);
         checkOutTime.setText(formattedTime);
         staffName.setText(selectedGuest.getStaffName());
         passNum.setText(selectedGuest.getPassNumber());
