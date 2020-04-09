@@ -123,7 +123,7 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.ViewHolder> 
                         showButtomSheetDialogFragment();
                   }
                   else {
-
+                        showGuestCheckOutInfo();
                   }
 
 
@@ -148,7 +148,12 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.ViewHolder> 
                 }
             });
         }
+        //function to show the bottom sheet dialog fragment(ie. GuestCheckOutInfo)
+        public void showGuestCheckOutInfo(){
+            GuestCheckOutInfo guestCheckOutInfo = new GuestCheckOutInfo(selectedGuest);
+            guestCheckOutInfo.show(context.getSupportFragmentManager(),guestCheckOutInfo.getTag());
 
+        }
         //function to show the bottom sheet dialog fragment(ie. VisitorInfoFragment)
         public void showButtomSheetDialogFragment(){
             VisitorInfoFragmnt visitorInfoFragmnt = new VisitorInfoFragmnt(selectedGuest,viewHolder);

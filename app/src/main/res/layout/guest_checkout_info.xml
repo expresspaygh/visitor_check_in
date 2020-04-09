@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:layout_marginTop="10dp"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectedName"/>
+
+
+    <TextView
+        android:id="@+id/selectedName"
+        android:layout_width="150sp"
+        android:layout_height="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/grey"
+        android:textSize="50px"
+        android:gravity="start"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="20sp"
+
+        />
+
+    <ImageButton
+        android:id="@+id/cancel"
+        android:layout_width="30dp"
+        android:layout_height="23dp"
+        android:background="@drawable/cancel_border"
+        android:src="@drawable/ic_cancel"
+        app:layout_constraintTop_toTopOf="@id/selectedName"
+        app:layout_constraintBottom_toBottomOf="@id/selectedName"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:layout_marginTop="10dp"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checked_time_tv"/>
+
+
+
+    <TextView
+        android:id="@+id/checked_time_tv"
+        android:layout_width="120sp"
+        android:layout_height="20sp"
+        app:layout_constraintTop_toBottomOf="@id/selectedName"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="Check Out Time"
+        android:textColorHint="@color/light_grey"
+        android:layout_margin="20sp"
+        />
+
+    <TextView
+        android:id="@+id/checkedOut_time_tv"
+        android:layout_width="85sp"
+        android:layout_height="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/grey"
+        android:textAlignment="textEnd"
+        android:gravity="end"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintTop_toTopOf="@id/checked_time_tv"
+        app:layout_constraintBottom_toBottomOf="@id/checked_time_tv"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:layout_marginTop="10dp"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/staff_field"/>
+
+
+
+
+    <TextView
+        android:id="@+id/staff_field"
+        android:layout_width="120sp"
+        android:layout_height="20sp"
+        android:hint="Came to Visit"
+        android:layout_margin="20sp"
+        android:textColorHint="@color/light_grey"
+        app:layout_constraintTop_toBottomOf="@id/checked_time_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/staff_name_tv"
+        android:layout_width="85sp"
+        android:layout_height="20sp"
+        android:textStyle="bold"
+        android:textAlignment="textEnd"
+        android:textColor="@color/grey"
+        android:gravity="end"
+        app:layout_constraintTop_toTopOf="@id/staff_field"
+        app:layout_constraintBottom_toBottomOf="@id/staff_field"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:layout_marginTop="10dp"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/purpose_toVisit_tv"/>
+
+
+
+
+    <TextView
+        android:id="@+id/purpose_toVisit_tv"
+        android:layout_width="120sp"
+        android:layout_height="20sp"
+        app:layout_constraintTop_toBottomOf="@id/staff_field"
+        app:layout_constraintStart_toStartOf="parent"
+        android:hint="@string/purpose_of_visit"
+        android:layout_margin="20sp"
+        android:textColorHint="@color/light_grey"
+        />
+
+    <TextView
+        android:id="@+id/purpose_tv"
+        android:layout_width="85sp"
+        android:layout_height="20sp"
+        app:layout_constraintTop_toTopOf="@id/purpose_toVisit_tv"
+        app:layout_constraintBottom_toBottomOf="@id/purpose_toVisit_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"
+        android:textAlignment="textEnd"
+        android:textColor="@color/grey"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="end" />
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:layout_marginTop="10dp"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pass_tv"/>
+
+
+    <TextView
+        android:id="@+id/pass_tv"
+        android:layout_width="120sp"
+        android:layout_height="20sp"
+        android:hint="@string/passnumber"
+        app:layout_constraintTop_toBottomOf="@id/purpose_toVisit_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColorHint="@color/light_grey"
+        android:layout_margin="20sp"
+        />
+
+    <TextView
+        android:id="@+id/passNum_tv"
+        android:layout_width="85sp"
+        android:layout_height="20sp"
+        app:layout_constraintTop_toTopOf="@id/pass_tv"
+        app:layout_constraintBottom_toBottomOf="@id/pass_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"
+        android:textAlignment="textEnd"
+        android:textColor="@color/grey"
+        android:gravity="end"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"/>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="fill"
+        android:layout_marginTop="10dp"
+        android:background="@color/borderGrey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pass_tv"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
