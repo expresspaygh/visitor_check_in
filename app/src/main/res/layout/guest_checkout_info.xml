@@ -34,7 +34,7 @@
     <ImageButton
         android:id="@+id/cancel"
         android:layout_width="30dp"
-        android:layout_height="23dp"
+        android:layout_height="30dp"
         android:background="@drawable/cancel_border"
         android:src="@drawable/ic_cancel"
         app:layout_constraintTop_toTopOf="@id/selectedName"
@@ -64,6 +64,7 @@
         android:hint="Check In Time"
         android:textColorHint="@color/light_grey"
         android:layout_margin="20sp"
+
         />
 
     <TextView

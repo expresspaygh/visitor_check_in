@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/selectedName"
             android:layout_width="150sp"
-            android:layout_height="30sp"
+            android:layout_height="40sp"
             android:textStyle="bold"
             android:textColor="@color/grey"
             android:textSize="50px"
@@ -32,7 +32,7 @@
         <ImageButton
             android:id="@+id/cancel"
             android:layout_width="30dp"
-            android:layout_height="23dp"
+            android:layout_height="30dp"
             android:background="@drawable/cancel_border"
             android:src="@drawable/ic_cancel"
             app:layout_constraintTop_toTopOf="@id/selectedName"
@@ -58,7 +58,7 @@
         <TextView
             android:id="@+id/checked_time_tv"
             android:layout_width="120sp"
-            android:layout_height="20sp"
+            android:layout_height="30sp"
             app:layout_constraintTop_toBottomOf="@id/selectedName"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="Check In Time"
@@ -97,7 +97,7 @@
         <TextView
             android:id="@+id/staff_field"
             android:layout_width="120sp"
-            android:layout_height="20sp"
+            android:layout_height="30sp"
             android:hint="Came to Visit"
             android:layout_margin="20sp"
             android:textColorHint="@color/light_grey"
@@ -137,7 +137,7 @@
         <TextView
             android:id="@+id/purpose_toVisit_tv"
             android:layout_width="120sp"
-            android:layout_height="20sp"
+            android:layout_height="30sp"
             app:layout_constraintTop_toBottomOf="@id/staff_field"
             app:layout_constraintStart_toStartOf="parent"
             android:hint="@string/purpose_of_visit"
@@ -175,7 +175,7 @@
         <TextView
             android:id="@+id/pass_tv"
             android:layout_width="120sp"
-            android:layout_height="20sp"
+            android:layout_height="30sp"
             android:hint="@string/passnumber"
             app:layout_constraintTop_toBottomOf="@id/purpose_toVisit_tv"
             app:layout_constraintStart_toStartOf="parent"
