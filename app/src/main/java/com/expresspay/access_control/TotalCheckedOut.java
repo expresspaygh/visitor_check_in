@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,12 +16,18 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.expresspay.access_control.models.GuestItem;
+import com.expresspay.access_control.models.DateItem;
 import com.expresspay.access_control.models.GuestCheckedInData;
-import com.expresspay.access_control.models.GuestData;
+import com.expresspay.access_control.models.ListItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -36,6 +41,7 @@ public class TotalCheckedOut extends Fragment {
 
     //define the guestData
     List<GuestCheckedInData> guestDataList = new ArrayList<>();
+    private List<ListItem> consolidatedList = new ArrayList<>();
 
 
     @Nullable
@@ -58,7 +64,7 @@ public class TotalCheckedOut extends Fragment {
         checkedOutRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         //set adapter to this recycler view
-        adapter = new GuestAdapter(guestDataList, getActivity());
+        adapter = new GuestAdapter(consolidatedList, getActivity());
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.recyclerview_divider));
@@ -93,7 +99,14 @@ public class TotalCheckedOut extends Fragment {
                 filteredList.add(item);
             }
         }
-        adapter.filterList(filteredList);
+
+        // group data according to date
+        HashMap<String, List<GuestCheckedInData>> groupedListMap = groupDataIntoHashMap(filteredList);
+
+        // convert map back into list for our adapter
+        List<ListItem> consolidatedList = consolidatedGuestList(groupedListMap);
+
+        adapter.filterList(consolidatedList);
     }
 
 
@@ -105,16 +118,82 @@ public class TotalCheckedOut extends Fragment {
                 .equalTo("checkedOut",true).findAll();
 
         guestDataList = new ArrayList<>(realm.copyFromRealm(guestCheckedInData));
-
+        Collections.reverse(guestDataList);
 
         //close the database
         realm.close();
 
-        // this tells the adapter that the data  has changed so it should reload the list
-        adapter.update(guestDataList);
-        Collections.reverse(guestDataList);
+        // group data according to date
+        HashMap<String, List<GuestCheckedInData>> groupedListMap = groupDataIntoHashMap(guestDataList);
+
+        // convert map back into list for our adapter
+        consolidatedList = consolidatedGuestList(groupedListMap);
+
+        // this tells the adapter that the data  has changed so it should reload the list that contains the RealmResult
+        adapter.update(consolidatedList);
 
     }
+
+    private HashMap<String,List<GuestCheckedInData>>
+    groupDataIntoHashMap(List<GuestCheckedInData> guestDataList) {
+
+        //create an empty HashMap
+        HashMap<String, List<GuestCheckedInData>> groupedHashedMap = new HashMap<>();
+
+        for(GuestCheckedInData guestCheckedInData : guestDataList){
+            String checkInTime = formatTime(guestCheckedInData.getCheckedInTime());
+            String hashMapKey = checkInTime;
+
+            if(groupedHashedMap.containsKey(hashMapKey)){
+                // The key(the date) is already in the HashMap; add the pojo object
+                // against the existing key.
+                groupedHashedMap.get(hashMapKey).add(guestCheckedInData);
+            }else {
+                //create a new list and then add the key-value pair
+                List<GuestCheckedInData> guestList = new ArrayList<>();
+                guestList.add(guestCheckedInData);
+                groupedHashedMap.put(hashMapKey,guestList);
+            }
+
+        }
+        return groupedHashedMap;
+    }
+
+
+    private List<ListItem> consolidatedGuestList(HashMap<String,List<GuestCheckedInData>> groupedData){
+
+        List<ListItem> consolidatedList = new ArrayList<>();
+
+        for(String date : groupedData.keySet()){
+            DateItem dateItem = new DateItem();
+            dateItem.setDate(date);
+            consolidatedList.add(dateItem);
+
+            for(GuestCheckedInData guestCheckedInData : groupedData.get(date)) {
+                GuestItem guestDataItems = new GuestItem();
+                guestDataItems.setGuestCheckedInData(guestCheckedInData);
+                consolidatedList.add(guestDataItems);
+            }
+
+        }
+
+        return consolidatedList;
+    }
+
+
+    private String formatTime(String dateTime){
+        String formattedTime;
+        try {
+            Date date = new Date(Long.parseLong(dateTime));
+            formattedTime = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+        }catch (Exception e){
+            //if an error error occurs while formatting the date
+            e.printStackTrace();
+            formattedTime = "";
+        }
+        return formattedTime;
+    }
+
 
     @Override
     public void onResume() {

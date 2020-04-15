@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -28,9 +29,9 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
     private ImageButton cancel;
     private Button checkedOutBtn;
     private GuestCheckedInData selectedGuest;
-    GuestAdapter.ViewHolder viewHolder;
+    GuestAdapter.GuestDataViewHolder viewHolder;
 
-    public VisitorInfoFragmnt(GuestCheckedInData selectedGuest ,GuestAdapter.ViewHolder viewHolder) {
+    public VisitorInfoFragmnt(GuestCheckedInData selectedGuest , GuestAdapter.GuestDataViewHolder viewHolder) {
         this.selectedGuest = selectedGuest;
         this.viewHolder = viewHolder;
 
@@ -62,26 +63,27 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
         settingFields();
 
 
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                  dismiss();
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
 
+            }
+        });
+
+        checkedOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!selectedGuest.isCheckedOut()){
+
+                     viewHolder.updateCheckedInGuests(selectedGuest,false);
+                    dismiss();
+
+                }else {
+                    // do nothing
                 }
-            });
-
-            checkedOutBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!selectedGuest.isCheckedOut()){
-                        viewHolder.updateCheckedInGuests(selectedGuest,false);
-                        dismiss();
-
-                    }else {
-                        // do nothing
-                    }
-                }
-            });
+            }
+        });
 
 
 

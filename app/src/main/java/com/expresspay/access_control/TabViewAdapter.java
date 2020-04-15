@@ -27,8 +27,8 @@ public class TabViewAdapter extends FragmentPagerAdapter {
                 TotalCheckedOut totalCheckedOut = new TotalCheckedOut();
                 return totalCheckedOut;
 
-                default:
-                    return null;
+            default:
+                return null;
         }
 
     }
