@@ -8,9 +8,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -22,10 +41,85 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+      setContentView(R.layout.activity_main);
+
+        ProgressBar spinner;
+        spinner = (ProgressBar)findViewById(R.id.spinner);
+        spinner.setVisibility(View.VISIBLE);
+
+        requestDataFromApi();
+
 
         //start the loading fragment based on whether guests are logged in or not
-            loadAppropriateFragment();
+          //  loadAppropriateFragment();
+    }
+
+    private void requestDataFromApi(){
+        String server_url = "http://10.0.2.2/exp-iris/api/iris.php?request=get_all_guests";
+        final RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("Response", "ResponseBody" + response);
+                        try {
+                            JSONObject guestsObject = response.getJSONObject("output");
+                            //getting the json array(guests) needed from the response
+                            JSONArray guestsArray = guestsObject.getJSONArray("guests");
+
+                            Gson gson = new Gson();
+                            Type guestListType = new TypeToken<ArrayList<GuestCheckedInData>>(){}.getType();
+                            List<GuestCheckedInData> guests = gson.fromJson(guestsArray.toString(),guestListType);
+                            Log.d("count", "count"+ " "+ guests.size());
+
+                            for(GuestCheckedInData guest : guests){
+                                Log.e("CheckTime","GuestCheckTime" + "  "+ guest.getCheckedInTime() + "  "+ guest.getCheckedOutTime());
+                            }
+                            addGuestsDataToDataBase(guests);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener(
+
+        ) {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Error message", "Something is wrong" + error);
+            }
+        }
+        );
+
+        requestQueue.add(jsonObjectRequest);
+
+
+
+    }
+
+
+
+    private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insertOrUpdate(guests);
+
+                ProgressBar spinner;
+                spinner = findViewById(R.id.spinner);
+                        spinner.setVisibility(View.GONE);
+                loadAppropriateFragment();
+
+            }
+        });
+
+
+
+
     }
 
 
@@ -62,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+
+
         //get current fragment
         boolean b = getCurrentFragment() instanceof NoCheckedInGuestFragment;
 
@@ -95,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
          fragmentTransaction.commit();
     }
 
-    boolean areGuestsCheckedIn(){
+    boolean areGuestsCheckedIn() {
         // check if guest data exists in our database
         // if yes, return true
         // if no, return false
@@ -104,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         final RealmResults<GuestCheckedInData> guestCheckedInData = realm.where(GuestCheckedInData.class).findAll();
         Log.e("Data", "onResume: " + guestCheckedInData.size());
 
-        if (guestCheckedInData.size() == 0){
+        if (guestCheckedInData.size() == 0) {
             return false;
         } else {
             return true;

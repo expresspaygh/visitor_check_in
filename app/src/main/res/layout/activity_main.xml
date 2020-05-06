@@ -1,9 +1,21 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white">
 
+
+ <ProgressBar
+     android:id="@+id/spinner"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:progressDrawable="@drawable/circular_spinner"
+     style="@style/Spinner"
+  app:layout_constraintBottom_toBottomOf="parent"
+  app:layout_constraintTop_toTopOf="parent"
+  app:layout_constraintStart_toStartOf="parent"
+  app:layout_constraintEnd_toEndOf="parent"
+  />
  <FrameLayout
   android:id="@+id/fragment_container_fl"
   android:layout_width="match_parent"

@@ -85,22 +85,16 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         //bind the data to the view (Recycler_item.xml) objects
-        // holder.bindView(position);
+
         switch (holder.getItemViewType()){
             case ListItem.TYPE_GUEST_DATA:
                 ((GuestDataViewHolder) holder).bindView(position);
-//                GuestItem guestDataItems = (GuestItem) consolidatedList.get(position);
-//                GuestDataViewHolder guestDataViewHolder = (GuestDataViewHolder) holder;
-//                guestDataItems.setGuestCheckedInData(guestDataItems.getGuestCheckedInData());
-//                (guestDataViewHolder).GuestDataBindView(position);
+//
                 break;
 
             case ListItem.TYPE_DATE:
                 ((DateViewHolder) holder).bindView(position);
-//                DateItem dateItem = (DateItem) consolidatedList.get(position);
-//                DateViewHolder dateViewHolder = (DateViewHolder) holder;
-//                dateItem.setDate(dateItem.toString());
-//                (dateViewHolder).DateTimeBindView(position);
+//
                 break;
         }
     }
@@ -128,11 +122,10 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         public void bindView(int position) {
-            //dont know what to do nxt
+
 
             // get the  date
             DateItem dateItem = (DateItem) consolidatedList.get(position);
-            // putting braces around a class is called type-casting... read on it.
 
             // set the textviewDate
             textViewDate.setText(dateItem.getDate());

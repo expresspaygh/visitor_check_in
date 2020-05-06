@@ -1,18 +1,30 @@
 package com.expresspay.access_control.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class GuestCheckedInData extends RealmObject {
+public class GuestCheckedInData extends RealmObject implements Serializable  {
+  @SerializedName("visitor_name")
     private String visitorName;
+
+  @SerializedName("visitor_phone")
     private String visitorPhone;
+    @SerializedName("staff_name")
     private String staffName;
+    @SerializedName("purpose")
     private String purpose;
+    @SerializedName("pass_number")
     private String passNumber;
     @PrimaryKey
+    @SerializedName("check_in_time")
     private String checkedInTime;
-
+    @SerializedName("check_out_time")
     private String checkedOutTime;
+    @SerializedName("is_checked_out")
     private boolean checkedOut;
 
     public String getVisitorName() {

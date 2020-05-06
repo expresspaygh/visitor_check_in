@@ -38,8 +38,6 @@ public class CheckInPopulatedStateFragment extends Fragment {
     private CollapsingToolbarLayout collapsingToolbar;
 
 
-
-
     private static final String CHECKED_IN = "Checked In";
     private static final String CHECKED_OUT = "Checked Out";
 
@@ -51,20 +49,18 @@ public class CheckInPopulatedStateFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_check_in_populated_state,container,false);
+        View view = inflater.inflate(R.layout.fragment_check_in_populated_state, container, false);
         toolbar = view.findViewById(R.id.toolbar);
         tabLayout = view.findViewById(R.id.tabLayout);
         viewPager = view.findViewById(R.id.viewPager);
         fab = view.findViewById(R.id.fab);
         appBarLayout = view.findViewById(R.id.appBarLayout);
         collapsingToolbar = view.findViewById(R.id.collapsingToolbar);
-
 
 
         return view;
@@ -79,8 +75,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 
-
-        final TabViewAdapter adapter = new TabViewAdapter(getFragmentManager(),tabLayout.getTabCount());
+        final TabViewAdapter adapter = new TabViewAdapter(getFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -110,18 +105,19 @@ public class CheckInPopulatedStateFragment extends Fragment {
 
         //hide and show title based on whether toolbar is expanded
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-           int scrollRange = -1;
-           boolean isShow = false;
+            int scrollRange = -1;
+            boolean isShow = false;
+
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if(scrollRange == -1){
+                if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if(scrollRange + verticalOffset == 0){
+                if (scrollRange + verticalOffset == 0) {
                     //set  title only if the toolbar is collapsed
                     collapsingToolbar.setTitle("expressPay");
-                  //  toolbar.setTitleTextColor(Color.WHITE);
-                   // toolbar.setTitleTextColor(0xFFFFFF);
+                    //  toolbar.setTitleTextColor(Color.WHITE);
+                    // toolbar.setTitleTextColor(0xFFFFFF);
                 } else if (!isShow) {
                     //set the title to an empty string to hide it
                     //when the toolbar is expanded
@@ -142,23 +138,24 @@ public class CheckInPopulatedStateFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getUpdateCount();
+
     }
 
     //updating the checkingIn and checkedOut count
-    void getUpdateCount(){
+    void getUpdateCount() {
         Realm realm = Realm.getDefaultInstance();
 
-     //fetch checkedIn users from the database and check the size
+        //fetch checkedIn users from the database and check the size
         // the size is equal to the number items
 
         final int guestCheckedInDataCount = realm.where(GuestCheckedInData.class)
-                .equalTo("checkedOut",false)
+                .equalTo("checkedOut", false)
                 .findAll().size();
 
         // fetch checkedUut users from the database and check the size
         // the size is equal to the number of items
         final int guestCheckedOutDataCount = realm.where(GuestCheckedInData.class)
-                .equalTo("checkedOut",true)
+                .equalTo("checkedOut", true)
                 .findAll().size();
 
         realm.close();
@@ -167,7 +164,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
         checkedOutCount = guestCheckedOutDataCount;
 
         // log the count values
-        Log.e("COUNT", "checked in guests => "+ checkedInCount + "\nchecked out guests => "+ checkedOutCount);
+        Log.e("COUNT", "checked in guests => " + checkedInCount + "\nchecked out guests => " + checkedOutCount);
 
         // get the first tab and update the count
         tabLayout.getTabAt(0).setText(generateCountMsg(checkedInCount, false));
@@ -177,12 +174,15 @@ public class CheckInPopulatedStateFragment extends Fragment {
     }
 
     //function to generate tab count message
-    String generateCountMsg(int count,boolean checkedOut){
-        if(checkedOut){
+    String generateCountMsg(int count, boolean checkedOut) {
+        if (checkedOut) {
             return count + " " + CHECKED_OUT;
-        }else {
+        } else {
             return count + " " + CHECKED_IN;
         }
     }
+
+
+
 
 }
