@@ -65,7 +65,14 @@
             android:paddingTop="5dp"
             android:background="@android:color/transparent"/>
     </com.google.android.material.textfield.TextInputLayout>
-
+<ProgressBar
+    android:id="@+id/spinner"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="@id/checkedIn_btn"
+    app:layout_constraintTop_toTopOf="@id/pass_num_field"/>
     <Button
         android:id="@+id/checkedIn_btn"
         android:layout_width="match_parent"

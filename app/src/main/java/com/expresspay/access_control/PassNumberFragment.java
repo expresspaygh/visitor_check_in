@@ -7,15 +7,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.expresspay.access_control.models.CheckInData;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.realm.Realm;
 
@@ -24,9 +45,11 @@ public class PassNumberFragment extends Fragment {
     private ImageButton backButton;
     private Button checkInButton;
     private TextInputEditText passNumber;
+    private ProgressBar spinner;
 
     private String  passNum ;
     private CheckInData checkInData;
+    GuestCheckedInData guestCheckedInData = new GuestCheckedInData();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +69,7 @@ public class PassNumberFragment extends Fragment {
         backButton= view.findViewById(R.id.back_imageButton);
         checkInButton = view.findViewById(R.id.checkedIn_btn);
         passNumber = view.findViewById(R.id.pass_Edt);
-
+        spinner = view.findViewById(R.id.spinner);
         return view;
     }
 
@@ -66,9 +89,27 @@ public class PassNumberFragment extends Fragment {
         checkInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(validate()){
-                    saveToDataBase();
-                   // getActivity().finish();
+
+
+
+                    String currentTime = String.valueOf(System.currentTimeMillis());
+                    Log.e("Timestamp", currentTime);
+
+
+                    guestCheckedInData.setVisitorName(checkInData.getVisitorName());
+                    guestCheckedInData.setVisitorPhone(checkInData.getVisitorPhone());
+                    guestCheckedInData.setStaffName(checkInData.getStaffName());
+                    guestCheckedInData.setPurpose(checkInData.getPurpose());
+                    guestCheckedInData.setPassNumber(checkInData.getPassNumber());
+                    guestCheckedInData.setCheckedInTime(currentTime);
+                    guestCheckedInData.setCheckedOutTime("");
+                    guestCheckedInData.setCheckedOut(false);
+
+                 //   spinner.setVisibility(View.VISIBLE);
+                      postDataToApi();
+
                 }
                 else {
                     Toast.makeText(v.getContext(), "Pass Number  Not Filled ", Toast.LENGTH_SHORT).show();
@@ -84,6 +125,7 @@ public class PassNumberFragment extends Fragment {
         }
 
         private void saveToDataBase(){
+        spinner.setVisibility(View.GONE);
 
         checkInData.setPassNumber( passNum );
             Log.e("anything", "saveToDataBase: " + checkInData.getVisitorName());
@@ -98,19 +140,7 @@ public class PassNumberFragment extends Fragment {
 
                 @Override
                 public void execute(Realm realm) {
-                    GuestCheckedInData guestCheckedInData = new GuestCheckedInData();
 
-                    String currentTime = String.valueOf(System.currentTimeMillis());
-                    Log.e("Timestamp", currentTime);
-
-                    guestCheckedInData.setVisitorName(checkInData.getVisitorName());
-                    guestCheckedInData.setVisitorPhone(checkInData.getVisitorPhone());
-                    guestCheckedInData.setStaffName(checkInData.getStaffName());
-                    guestCheckedInData.setPurpose(checkInData.getPurpose());
-                    guestCheckedInData.setPassNumber(checkInData.getPassNumber());
-                    guestCheckedInData.setCheckedInTime(currentTime);
-                    guestCheckedInData.setCheckedOutTime("");
-                    guestCheckedInData.setCheckedOut(false);
 
                     realm.insert(guestCheckedInData);
                 }
@@ -132,5 +162,89 @@ public class PassNumberFragment extends Fragment {
 
         }
 
+        private void postDataToApi() {
+        //GET parameters
+            HashMap<String,String> params = new HashMap<String, String>();
 
-    }
+            params.put("visitor_name", guestCheckedInData.getVisitorName());
+            params.put("visitor_phone",guestCheckedInData.getVisitorPhone());
+            params.put("staff_name",guestCheckedInData.getStaffName());
+            params.put("purpose",guestCheckedInData.getPurpose());
+            params.put("pass_number",guestCheckedInData.getPassNumber());
+            params.put("check_in_time",guestCheckedInData.getCheckedInTime());
+            params.put("check_out_time", guestCheckedInData.getCheckedOutTime());
+
+            if(guestCheckedInData.isCheckedOut() == true){
+                params.put("is_checked_in","true" );
+            }else{
+                params.put("is_checked_in","false");
+            }
+
+            Log.e("params", "params"+ params);
+//create a new json object
+            JSONObject parameters = new JSONObject(params);
+
+
+            String server_url = getString(R.string.check_in_url);
+            final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, parameters,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.e("Response", "ResponseBody" + response);
+                            try {
+                               String status = response.getString("status");
+                               String message = response.getString("message");
+                               if(status.equals("0")){
+                                   saveToDataBase();
+                               }else {
+                                   Log.e("Message","message"+ " " + message);
+                               }
+
+
+                       } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener(
+
+            ) {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error message", "Something is wrong" + error.getMessage());
+                }
+            }
+            ){
+                @Override
+                protected Map<String, String> getParams()  {
+
+                    HashMap<String,String> params = new HashMap<String, String>();
+
+                  params.put("visitor_name", guestCheckedInData.getVisitorName());
+                    params.put("visitor_phone",guestCheckedInData.getVisitorPhone());
+                    params.put("staff_name",guestCheckedInData.getStaffName());
+                    params.put("purpose",guestCheckedInData.getPurpose());
+                     params.put("pass_number",guestCheckedInData.getPassNumber());
+                    params.put("check_in_time",guestCheckedInData.getCheckedInTime());
+                    params.put("check_out_time", guestCheckedInData.getCheckedOutTime());
+
+                    if(guestCheckedInData.isCheckedOut() == true){
+                        params.put("is_checked_in","true" );
+                    }else{
+                        params.put("is_checked_in","false");
+                    }
+
+        Log.e("params", "params"+ params);
+                    return params;
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+
+        }
+
+
+
+        }

@@ -13,6 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.expresspay.access_control.models.DateItem;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.expresspay.access_control.models.GuestItem;
@@ -20,10 +26,14 @@ import com.expresspay.access_control.models.ListItem;
 import com.github.ivbaranov.mli.MaterialLetterIcon;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import io.realm.Realm;
@@ -33,7 +43,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     //Context is changed to FragmentActivity to be able to get access to my fragments
     private FragmentActivity context;
-
+ private    GuestCheckedInData guestCheckedInData;
     private GuestCheckedInData selectedGuest;
 
     RecyclerView.ViewHolder viewHolder;
@@ -175,14 +185,140 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onClick(View v) {
                     //save an instance of the guest the user selects
                     selectedGuest =  ((GuestItem) consolidatedList.get(getAdapterPosition())).getGuestCheckedInData();
+
+
                     if(!selectedGuest.isCheckedOut()){
-                        updateCheckedInGuests(selectedGuest,false);
+
+                       checkGuestOutFromApi(false);
                     }else {
                         // do nothing
                     }
 
                 }
             });
+        }
+     //   boolean undo = true;
+        private void checkGuestOutFromApi(final boolean undo){
+            //GET parameters
+            HashMap<String,String> params = new HashMap<String, String>();
+
+            params.put("visitor_name", selectedGuest.getVisitorName());
+            params.put("visitor_phone",selectedGuest.getVisitorPhone());
+            params.put("staff_name",selectedGuest.getStaffName());
+            params.put("purpose",selectedGuest.getPurpose());
+            params.put("pass_number",selectedGuest.getPassNumber());
+            params.put("check_in_time",selectedGuest.getCheckedInTime());
+
+            String CheckOutCurrentTime = String.valueOf(System.currentTimeMillis());
+            Log.e("Timestamp", CheckOutCurrentTime);
+
+                if(!selectedGuest.isCheckedOut()) {
+                    params.put("check_out_time", CheckOutCurrentTime);
+
+                }else {
+                guestCheckedInData.setCheckedOutTime(CheckOutCurrentTime);
+               params.put("check_out_time",selectedGuest.getCheckedOutTime());
+                }
+
+
+            if(selectedGuest.isCheckedOut() == true){
+                params.put("is_checked_out","false" );
+            }else{
+                params.put("is_checked_out","true");
+            }
+
+            Log.e("params", "params"+ params);
+           //create a new json object
+            JSONObject parameters = new JSONObject(params);
+
+
+            String server_url = "http://10.0.2.2/exp-iris/api/iris.php?request=update_guest";
+            final RequestQueue requestQueue = Volley.newRequestQueue(context);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, parameters,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.e("Response", "ResponseBody" + response);
+                            try {
+
+                                String status = response.getString("status");
+                                String message = response.getString("message");
+                                if(status.equals("0")){
+
+                                    if (!undo) {
+                                        updateCheckedInGuests(selectedGuest,false);
+
+
+                                    }else {
+                                        updateCheckedInGuests(selectedGuest,true);
+
+
+
+                                       // showSuccessSnackBar();
+
+                                    }
+
+
+
+
+
+                                }else {
+                                    Log.e("Message","message"+ " " + message);
+                                }
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener(
+
+            ) {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Error message", "Something is wrong" + error.getMessage());
+                }
+            }
+            ){
+                @Override
+                protected Map<String, String> getParams()  {
+
+                    HashMap<String,String> params = new HashMap<String, String>();
+
+                    params.put("visitor_name", selectedGuest.getVisitorName());
+                    params.put("visitor_phone",selectedGuest.getVisitorPhone());
+                    params.put("staff_name",selectedGuest.getStaffName());
+                    params.put("purpose",selectedGuest.getPurpose());
+                    params.put("pass_number",selectedGuest.getPassNumber());
+                    params.put("check_in_time",selectedGuest.getCheckedInTime());
+
+
+                    String CheckOutCurrentTime = String.valueOf(System.currentTimeMillis());
+                    Log.e("Timestamp", CheckOutCurrentTime);
+
+                    if(selectedGuest.isCheckedOut() == true) {
+                        params.put("check_out_time", CheckOutCurrentTime);
+
+                    }else {
+                        guestCheckedInData.setCheckedOutTime(CheckOutCurrentTime);
+                        params.put("check_out_time",selectedGuest.getCheckedOutTime());
+                    }
+                    
+                    if(selectedGuest.isCheckedOut() == true){
+                        params.put("is_checked_out","false" );
+                    }else{
+                        params.put("is_checked_out","true");
+                    }
+
+                    Log.e("params", "params"+ params);
+                    return params;
+                }
+            };
+
+            requestQueue.add(jsonObjectRequest);
+
         }
 
         void bindView(int position) {
@@ -241,13 +377,14 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    GuestCheckedInData guestCheckedInData = realm.where(GuestCheckedInData.class)
+                   guestCheckedInData  = realm.where(GuestCheckedInData.class)
                             .equalTo("checkedOut", selectedGuest.isCheckedOut())//either true or false
                             .and()
                             .equalTo("checkedInTime", selectedGuest.getCheckedInTime())
                             .findFirst();
 
                     Log.e("REALM", guestCheckedInData.getVisitorName());
+
                     guestCheckedInData.setCheckedOut(!selectedGuest.isCheckedOut());
                     selectedGuest.setCheckedOut(!selectedGuest.isCheckedOut());
 
@@ -255,8 +392,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     String CheckOutCurrentTime = String.valueOf(System.currentTimeMillis());
                     Log.e("Timestamp", CheckOutCurrentTime);
                     guestCheckedInData.setCheckedOutTime(CheckOutCurrentTime);
-
-                    //  guestCheckedInData.setCheckedOutTime(!selectedGuest.setCheckedOutTime(););
 
                 }
             }, new Realm.Transaction.OnSuccess() {
@@ -304,7 +439,9 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateCheckedInGuests(selectedGuest,true);
+                  checkGuestOutFromApi(true);
+                   // updateCheckedInGuests(selectedGuest,true);
+
                 }
             });
             snackbar.show();
@@ -360,3 +497,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
 }
+
+
+

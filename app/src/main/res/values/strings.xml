@@ -23,6 +23,8 @@
     <string name="number">Phone Number</string>
     <string name="other">Other</string>
     <string name="search_for_a_guest">Search for a guest</string>
+    <string name="check_in_url">http://10.0.2.2/exp-iris/api/iris.php?request=check_in_guest</string>
+    <string name="base_url">http://10.0.2.2/exp-iris/api/iris.php?request=get_all_guests</string>
 
 
 </resources>

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +38,8 @@ import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
+    ProgressBar spinner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +47,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
 
-        ProgressBar spinner;
+
         spinner = (ProgressBar)findViewById(R.id.spinner);
-        spinner.setVisibility(View.VISIBLE);
 
-        requestDataFromApi();
+        boolean accessDataFromSharedPreference =  retrieveDataFromSharedPreference();
 
 
-        //start the loading fragment based on whether guests are logged in or not
-          //  loadAppropriateFragment();
+        if(accessDataFromSharedPreference == true){
+            loadAppropriateFragment();
+
+        }
+        else {
+            spinner.setVisibility(View.VISIBLE);
+
+            requestDataFromApi();
+
+        }
+
     }
 
     private void requestDataFromApi(){
-        String server_url = "http://10.0.2.2/exp-iris/api/iris.php?request=get_all_guests";
+        String server_url = getString(R.string.base_url);
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
                 new Response.Listener<JSONObject>() {
@@ -63,19 +75,28 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Log.e("Response", "ResponseBody" + response);
                         try {
-                            JSONObject guestsObject = response.getJSONObject("output");
-                            //getting the json array(guests) needed from the response
-                            JSONArray guestsArray = guestsObject.getJSONArray("guests");
+                            String status = response.getString("status");
+                            String message = response.getString("message");
 
-                            Gson gson = new Gson();
-                            Type guestListType = new TypeToken<ArrayList<GuestCheckedInData>>(){}.getType();
-                            List<GuestCheckedInData> guests = gson.fromJson(guestsArray.toString(),guestListType);
-                            Log.d("count", "count"+ " "+ guests.size());
+                            if(status.equals("0")) {
+                                JSONObject guestsObject = response.getJSONObject("output");
+                                //getting the json array(guests) needed from the response
+                                JSONArray guestsArray = guestsObject.getJSONArray("guests");
+                                Gson gson = new Gson();
+                                Type guestListType = new TypeToken<ArrayList<GuestCheckedInData>>() {
+                                }.getType();
+                                List<GuestCheckedInData> guests = gson.fromJson(guestsArray.toString(), guestListType);
+                                Log.d("count", "count" + " " + guests.size());
 
-                            for(GuestCheckedInData guest : guests){
-                                Log.e("CheckTime","GuestCheckTime" + "  "+ guest.getCheckedInTime() + "  "+ guest.getCheckedOutTime());
+
+                                for (GuestCheckedInData guest : guests) {
+                                    Log.e("CheckTime", "GuestCheckTime" + "  " + guest.getCheckedInTime() + "  " + guest.getCheckedOutTime());
+                                }
+                                addGuestsDataToDataBase(guests);
+                            }else {
+                                Log.d("message","message"+" "+ message);
                             }
-                            addGuestsDataToDataBase(guests);
+//get status
 
 
                         } catch (JSONException e) {
@@ -101,6 +122,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public  String key = "SyncedLocalDataBaseWithServer";
+    private void saveDataToSharedPreference(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPref",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key,true);
+        editor.apply();
+
+}
+
+
+private boolean retrieveDataFromSharedPreference(){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+    return  sharedPreferences.getBoolean(key,false);
+
+
+}
+
 
     private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
         Realm realm = Realm.getDefaultInstance();
@@ -109,10 +147,9 @@ public class MainActivity extends AppCompatActivity {
             public void execute(Realm realm) {
                 realm.insertOrUpdate(guests);
 
-                ProgressBar spinner;
-                spinner = findViewById(R.id.spinner);
-                        spinner.setVisibility(View.GONE);
-                loadAppropriateFragment();
+                saveDataToSharedPreference();
+               loadAppropriateFragment();
+
 
             }
         });
@@ -141,7 +178,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadAppropriateFragment(){
+        spinner.setVisibility(View.GONE);
       if(areGuestsCheckedIn()){
+
             Fragment fragmentGuest = new CheckInPopulatedStateFragment();
             loadFragment(fragmentGuest, false,"CheckInPopulatedStateFragment");
         }
