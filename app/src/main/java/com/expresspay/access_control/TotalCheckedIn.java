@@ -140,11 +140,86 @@ public class TotalCheckedIn extends Fragment {
         List<ListItem> consolidatedList = consolidatedGuestList(groupedListMap);
 
         adapter.filterGuestDataList(consolidatedList);
+
     }
 
-    private void refreshCheckInDataFromDataBase(){
-            fetchCheckedInGuests();
+
+    private void fetchGuestDataFromApi(){
+        String server_url = getString(R.string.base_url);
+        final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("Response", "ResponseBody" + response);
+                        try {
+                            String status = response.getString("status");
+                            String message = response.getString("message");
+
+                            if(status.equals("0")) {
+                                JSONObject guestsObject = response.getJSONObject("output");
+                                //getting the json array(guests) needed from the response
+                                JSONArray guestsArray = guestsObject.getJSONArray("guests");
+                                Gson gson = new Gson();
+                                Type guestListType = new TypeToken<ArrayList<GuestCheckedInData>>() {
+                                }.getType();
+                                List<GuestCheckedInData> guests = gson.fromJson(guestsArray.toString(), guestListType);
+
+
+                                for (GuestCheckedInData guest : guests) {
+                                    Log.e("CheckTime", "GuestCheckTime" + "  " + guest.getCheckedInTime() + "  " + guest.getCheckedOutTime());
+                                    addGuestsDataToDataBase(guests);
+                                }
+
+                            }else {
+                                Log.d("message","message"+" "+ message);
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Error message", "Something is wrong" + error);
+
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
     }
+
+
+    private void refreshCheckInDataFromDataBase(){
+        fetchGuestDataFromApi();
+    }
+
+    Realm realm = Realm.getDefaultInstance();
+    private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insertOrUpdate(guests);
+
+                pullToRefresh.setRefreshing(false);
+
+            }
+        });
+
+
+
+
+    }
+
+
 
     public void fetchCheckedInGuests(){
 
@@ -170,6 +245,8 @@ public class TotalCheckedIn extends Fragment {
         adapter.update(consolidatedList);
         pullToRefresh.setRefreshing(false);
     }
+
+
 
     private HashMap<String,List<GuestCheckedInData>>
     groupDataIntoHashMap(List<GuestCheckedInData> guestDataList) {
