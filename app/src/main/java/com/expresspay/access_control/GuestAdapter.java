@@ -450,48 +450,54 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             snackbar.show();
         }
 
-        //update the display
-        void updateCountAndListContents(){
-            //update the count at the top
-            updateCount();
-            updateList();
-        }
 
-        private void updateCount(){
-            //find CheckedInPopulatedFragment using the tag set when loading the fragment
-            CheckInPopulatedStateFragment f = (CheckInPopulatedStateFragment) context.getSupportFragmentManager().findFragmentByTag("CheckInPopulatedStateFragment");
 
-            // make sure its not null before you update
-            if (f != null) {
-                f.getUpdateCount();
-            } else {
-                Log.e("UPDATE", "CheckInPopulatedStateFragment is null");
-            }
-        }
-
-        private void updateList() {
-            // Find TotalCheckedIn and TotalCheckedOut
-            TotalCheckedIn totalCheckedIn = (TotalCheckedIn) context.getSupportFragmentManager().findFragmentByTag(getDefaultFragmentTag(0));
-            TotalCheckedOut totalCheckedOut = (TotalCheckedOut) context.getSupportFragmentManager().findFragmentByTag(getDefaultFragmentTag(1));
-
-            // make sure none of them are null
-            if (totalCheckedIn != null && totalCheckedOut  != null) {
-
-                // call the functions that update their various lists
-                totalCheckedIn.fetchCheckedInGuests();
-                totalCheckedOut.fetchCheckedOutGuest();
-            } else {
-                Log.e("UPDATE", "either is null");
-            }
-        }
-
-        // this is the default tag generated for fragments that are in a viewPager
-        // (CheckInPopulatedStateFragment is not a viewpager so there is no default tag)
-        private String getDefaultFragmentTag(int pos){
-            return "android:switcher:"+R.id.viewPager+":"+pos;
-        }
 
     }
+
+    // this is the default tag generated for fragments that are in a viewPager
+    // (CheckInPopulatedStateFragment is not a viewpager so there is no default tag)
+    private String getDefaultFragmentTag(int pos){
+        return "android:switcher:"+R.id.viewPager+":"+pos;
+    }
+
+    private void updateCount(){
+        //find CheckedInPopulatedFragment using the tag set when loading the fragment
+        CheckInPopulatedStateFragment f = (CheckInPopulatedStateFragment) context.getSupportFragmentManager().findFragmentByTag("CheckInPopulatedStateFragment");
+
+        // make sure its not null before you update
+        if (f != null) {
+            f.getUpdateCount();
+        } else {
+            Log.e("UPDATE", "CheckInPopulatedStateFragment is null");
+        }
+    }
+
+    private void updateList() {
+        // Find TotalCheckedIn and TotalCheckedOut
+        TotalCheckedIn totalCheckedIn = (TotalCheckedIn) context.getSupportFragmentManager().findFragmentByTag(getDefaultFragmentTag(0));
+        TotalCheckedOut totalCheckedOut = (TotalCheckedOut) context.getSupportFragmentManager().findFragmentByTag(getDefaultFragmentTag(1));
+
+        // make sure none of them are null
+        if (totalCheckedIn != null && totalCheckedOut  != null) {
+
+            // call the functions that update their various lists
+            totalCheckedIn.fetchCheckedInGuests();
+            totalCheckedOut.fetchCheckedOutGuest();
+        } else {
+            Log.e("UPDATE", "either is null");
+        }
+    }
+
+
+
+    //update the display
+    void updateCountAndListContents(){
+        //update the count at the top
+        updateCount();
+        updateList();
+    }
+
 
     public void filterGuestDataList(List<ListItem> filteredGuestDataList){
         consolidatedList = filteredGuestDataList;

@@ -98,7 +98,7 @@ public class TotalCheckedIn extends Fragment {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshCheckInDataFromDataBase();
+                fetchGuestDataFromApi();
             }
         });
 
@@ -145,6 +145,8 @@ public class TotalCheckedIn extends Fragment {
 
 
     private void fetchGuestDataFromApi(){
+        pullToRefresh.setRefreshing(true);
+
         String server_url = getString(R.string.base_url);
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
@@ -169,6 +171,8 @@ public class TotalCheckedIn extends Fragment {
                                 for (GuestCheckedInData guest : guests) {
                                     Log.e("CheckTime", "GuestCheckTime" + "  " + guest.getCheckedInTime() + "  " + guest.getCheckedOutTime());
                                     addGuestsDataToDataBase(guests);
+
+                                    pullToRefresh.setRefreshing(false);
                                 }
 
                             }else {
@@ -197,26 +201,20 @@ public class TotalCheckedIn extends Fragment {
     }
 
 
-    private void refreshCheckInDataFromDataBase(){
-        fetchGuestDataFromApi();
-    }
+
 
     Realm realm = Realm.getDefaultInstance();
     private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
+        pullToRefresh.setRefreshing(false);
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.insertOrUpdate(guests);
 
-                pullToRefresh.setRefreshing(false);
-
             }
         });
-
-
-
-
+            adapter.updateCountAndListContents();
     }
 
 
@@ -243,7 +241,7 @@ public class TotalCheckedIn extends Fragment {
 
         // this tells the adapter that the data  has changed so it should reload the list that contains the RealmResult
         adapter.update(consolidatedList);
-        pullToRefresh.setRefreshing(false);
+
     }
 
 

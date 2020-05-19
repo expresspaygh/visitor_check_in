@@ -93,8 +93,10 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e("CheckTime", "GuestCheckTime" + "  " + guest.getCheckedInTime() + "  " + guest.getCheckedOutTime());
                                 }
                                 addGuestsDataToDataBase(guests);
+
                             }else {
                                 Log.d("message","message"+" "+ message);
+                                loadAppropriateFragment();
                             }
 //get status
 
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Error message", "Something is wrong" + error);
+               // loadAppropriateFragment();
             }
         }
         );

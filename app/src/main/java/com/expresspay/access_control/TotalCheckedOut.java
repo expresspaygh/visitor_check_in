@@ -89,7 +89,7 @@ public class TotalCheckedOut extends Fragment {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshCheckOutDataFromDataBase();
+                fetchGuestDataFromApi();
             }
         });
 
@@ -132,6 +132,7 @@ public class TotalCheckedOut extends Fragment {
 
 
     private void fetchGuestDataFromApi(){
+        pullToRefresh.setRefreshing(true);
         String server_url = getString(R.string.base_url);
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
@@ -156,6 +157,7 @@ public class TotalCheckedOut extends Fragment {
                                 for (GuestCheckedInData guest : guests) {
                                     Log.e("CheckTime", "GuestCheckTime" + "  " + guest.getCheckedInTime() + "  " + guest.getCheckedOutTime());
                                     addGuestsDataToDataBase(guests);
+                                    pullToRefresh.setRefreshing(false);
                                 }
 
                             }else {
@@ -184,18 +186,16 @@ public class TotalCheckedOut extends Fragment {
     }
 
 
-    private void refreshCheckOutDataFromDataBase(){
-        fetchGuestDataFromApi();
-    }
+
 
     Realm realm = Realm.getDefaultInstance();
     private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
-
+        pullToRefresh.setRefreshing(false);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.insertOrUpdate(guests);
-                pullToRefresh.setRefreshing(false);
+                adapter.updateCountAndListContents();
 
             }
         });
@@ -281,7 +281,7 @@ public class TotalCheckedOut extends Fragment {
         String formattedTime;
         try {
             Date date = new Date(Long.parseLong(dateTime));
-            formattedTime = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(date);
+            formattedTime = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date);
         } catch (Exception e) {
             //if an error error occurs while formatting the date
             e.printStackTrace();
