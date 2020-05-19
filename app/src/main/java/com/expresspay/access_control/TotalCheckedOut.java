@@ -197,7 +197,7 @@ public class TotalCheckedOut extends Fragment {
         String formattedTime;
         try {
             Date date = new Date(Long.parseLong(dateTime));
-            formattedTime = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(date);
+            formattedTime = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date);
         } catch (Exception e) {
             //if an error error occurs while formatting the date
             e.printStackTrace();
