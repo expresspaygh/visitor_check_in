@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
   <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/searchList"
@@ -19,14 +20,22 @@
 
 
 
-
-
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/pullToRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@id/searchList"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    >
   <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/checkedIn_recyclerVew"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintTop_toBottomOf="@id/searchList"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"/>
+  />
+
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

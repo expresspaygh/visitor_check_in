@@ -107,7 +107,7 @@ public class PassNumberFragment extends Fragment {
                     guestCheckedInData.setCheckedOutTime("");
                     guestCheckedInData.setCheckedOut(false);
 
-                 //   spinner.setVisibility(View.VISIBLE);
+                  spinner.setVisibility(View.VISIBLE);
                       postDataToApi();
 
                 }

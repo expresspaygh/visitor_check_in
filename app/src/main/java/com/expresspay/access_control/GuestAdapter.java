@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,7 +49,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     RecyclerView.ViewHolder viewHolder;
 
-    private int[] arrayColor = {R.color.violet, R.color.lemon, R.color.brown, R.color.light_green, R.color.light_blue, R.color.blue, R.color.deep_green, R.color.orange};
+    private int[] arrayColorForLetterIcon = {R.color.violet, R.color.lemon, R.color.brown, R.color.light_green, R.color.light_blue, R.color.blue, R.color.deep_green, R.color.orange};
 
 
 
@@ -143,14 +144,16 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    public class GuestDataViewHolder extends RecyclerView.ViewHolder {
+
+  public class GuestDataViewHolder extends RecyclerView.ViewHolder {
         //define the view objects
         private TextView textViewFullName;
         private TextView textViewCheckedTime;
 
         private MaterialLetterIcon letterIcon;
-        private ImageView imageViewUser_x;
+        private ImageView checkOutGuestIcon;
         private View itemView;
+        private ProgressBar spinner;
 
         public GuestDataViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -161,7 +164,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             textViewFullName = itemView.findViewById(R.id.fullName_tv);
             textViewCheckedTime = itemView.findViewById(R.id.checked_time_tv);
             letterIcon = itemView.findViewById(R.id.letterIcon);
-            imageViewUser_x = itemView.findViewById(R.id.user_x);
+            checkOutGuestIcon = itemView.findViewById(R.id.user_x);
+            spinner = itemView.findViewById(R.id.spinner);
 
 
 
@@ -180,7 +184,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
 
-            imageViewUser_x.setOnClickListener(new View.OnClickListener() {
+            checkOutGuestIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //save an instance of the guest the user selects
@@ -188,7 +192,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
                     if(!selectedGuest.isCheckedOut()){
-
+                        spinner.setVisibility(View.VISIBLE);
                        checkGuestOutFromApi(false);
                     }else {
                         // do nothing
@@ -216,7 +220,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     params.put("check_out_time", CheckOutCurrentTime);
 
                 }else {
-                guestCheckedInData.setCheckedOutTime(CheckOutCurrentTime);
+                selectedGuest.setCheckedOutTime(CheckOutCurrentTime);
                params.put("check_out_time",selectedGuest.getCheckedOutTime());
                 }
 
@@ -245,16 +249,12 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 String message = response.getString("message");
                                 if(status.equals("0")){
 
+
                                     if (!undo) {
                                         updateCheckedInGuests(selectedGuest,false);
-
-
-                                    }else {
+                                          }else {
+                                        spinner.setVisibility(View.VISIBLE);
                                         updateCheckedInGuests(selectedGuest,true);
-
-
-
-                                       // showSuccessSnackBar();
 
                                     }
 
@@ -302,7 +302,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         params.put("check_out_time", CheckOutCurrentTime);
 
                     }else {
-                        guestCheckedInData.setCheckedOutTime(CheckOutCurrentTime);
+                        selectedGuest.setCheckedOutTime(CheckOutCurrentTime);
                         params.put("check_out_time",selectedGuest.getCheckedOutTime());
                     }
                     
@@ -332,14 +332,14 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 String formattedTime = formatTime((guestCheckedInData.getCheckedOutTime()));
                 textViewCheckedTime.setText("Checked out @" + formattedTime);
                 //set the drawable to user icon
-                imageViewUser_x.setImageResource(R.drawable.ic_guest_check_in_icon);
-                imageViewUser_x.setVisibility(View.INVISIBLE);
+                checkOutGuestIcon.setImageResource(R.drawable.ic_guest_check_in_icon);
+                checkOutGuestIcon.setVisibility(View.INVISIBLE);
             } else {
                 String formattedTime = formatTime((guestCheckedInData.getCheckedInTime()));
 
                 textViewCheckedTime.setText("Checked in @ " + formattedTime);
-                imageViewUser_x.setImageResource(R.drawable.ic_user_x);
-                imageViewUser_x.setVisibility(View.VISIBLE);
+                checkOutGuestIcon.setImageResource(R.drawable.ic_user_x);
+                checkOutGuestIcon.setVisibility(View.VISIBLE);
             }
             // letter icon
             letterIcon.setLetter(guestCheckedInData.getVisitorName());
@@ -353,7 +353,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             int r = random.nextInt(7);
 //            Log.e("random", r + "" + arrayColor[r]);
             //   Color color = arrayColor[];
-            letterIcon.setShapeColor(context.getResources().getColor(arrayColor[r]));
+            letterIcon.setShapeColor(context.getResources().getColor(arrayColorForLetterIcon[r]));
 
         }
 
@@ -371,6 +371,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         //function to update the database
         public void updateCheckedInGuests(final GuestCheckedInData selectedGuest,final boolean undo){
+            spinner.setVisibility(View.GONE);
+
             Realm realm = Realm.getDefaultInstance();
 
             //Asynchronously update objects on a background thread
@@ -400,6 +402,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     // do this if update is successful
                     if(!undo){
+                      // spinner.setVisibility(View.VISIBLE);
                         showSuccessSnackBar();
 
                     }
@@ -414,7 +417,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
             });
-            realm.close();
+           realm.close();
         }
 
 
@@ -439,8 +442,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    spinner.setVisibility(View.VISIBLE);
                   checkGuestOutFromApi(true);
-                   // updateCheckedInGuests(selectedGuest,true);
 
                 }
             });
@@ -490,8 +493,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
-    public void filterList(List<ListItem> filteredList){
-        consolidatedList = filteredList;
+    public void filterGuestDataList(List<ListItem> filteredGuestDataList){
+        consolidatedList = filteredGuestDataList;
         notifyDataSetChanged();
     }
 

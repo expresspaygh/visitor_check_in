@@ -69,10 +69,13 @@
     android:id="@+id/spinner"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:visibility="invisible"
+    android:progressDrawable="@drawable/circular_spinner"
+    style="@style/Spinner"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintBottom_toBottomOf="@id/checkedIn_btn"
-    app:layout_constraintTop_toTopOf="@id/pass_num_field"/>
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="parent"/>
     <Button
         android:id="@+id/checkedIn_btn"
         android:layout_width="match_parent"

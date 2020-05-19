@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -60,7 +61,7 @@ public class TotalCheckedIn extends Fragment {
     private GuestAdapter adapter;
 
     private EditText searchList;
-
+    private SwipeRefreshLayout pullToRefresh;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class TotalCheckedIn extends Fragment {
 
         searchList = view.findViewById(R.id.searchList);
         checkedInRecyclerView = view.findViewById(R.id.checkedIn_recyclerVew);
+        pullToRefresh = view.findViewById(R.id.pullToRefresh);
         return view;
     }
 
@@ -93,6 +95,14 @@ public class TotalCheckedIn extends Fragment {
         checkedInRecyclerView.setAdapter(adapter);
 
 
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshCheckInDataFromDataBase();
+            }
+        });
+
+
         searchList.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -106,27 +116,34 @@ public class TotalCheckedIn extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable ) {
-                filter(editable.toString());
+                filterGuestData(editable.toString());
             }
         });
 
     }
-    private void filter(String text){
-        List<GuestCheckedInData> filteredList = new ArrayList<>();
+    private void filterGuestData(String text){
+        List<GuestCheckedInData> filteredGuestList = new ArrayList<>();
 
         for(GuestCheckedInData item : guestDataList){
             if(item.getVisitorName().toLowerCase().contains(text.toLowerCase())){
-                filteredList.add(item);
+                filteredGuestList.add(item);
             }
         }
 
+
+
+
         // group data according to date
-        HashMap<String, List<GuestCheckedInData>> groupedListMap = groupDataIntoHashMap(filteredList);
+        HashMap<String, List<GuestCheckedInData>> groupedListMap = groupDataIntoHashMap(filteredGuestList);
 
         // convert map back into list for our adapter
         List<ListItem> consolidatedList = consolidatedGuestList(groupedListMap);
 
-        adapter.filterList(consolidatedList);
+        adapter.filterGuestDataList(consolidatedList);
+    }
+
+    private void refreshCheckInDataFromDataBase(){
+            fetchCheckedInGuests();
     }
 
     public void fetchCheckedInGuests(){
@@ -151,6 +168,7 @@ public class TotalCheckedIn extends Fragment {
 
         // this tells the adapter that the data  has changed so it should reload the list that contains the RealmResult
         adapter.update(consolidatedList);
+        pullToRefresh.setRefreshing(false);
     }
 
     private HashMap<String,List<GuestCheckedInData>>
