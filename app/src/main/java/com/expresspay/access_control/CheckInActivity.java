@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class CheckInActivity extends AppCompatActivity {
+    MainActivity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,8 @@ public class CheckInActivity extends AppCompatActivity {
         if (currentFragment instanceof VisitorDetailsfragment) {
             finish();
         } else {
-            super.onBackPressed();
+
+           super.onBackPressed();
         }
 
 

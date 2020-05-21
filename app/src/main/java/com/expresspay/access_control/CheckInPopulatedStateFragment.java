@@ -134,6 +134,8 @@ public class CheckInPopulatedStateFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();

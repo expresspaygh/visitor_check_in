@@ -1,10 +1,12 @@
 package com.expresspay.access_control;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }else {
                                 Log.d("message","message"+" "+ message);
-                                loadAppropriateFragment();
+                               loadAppropriateFragment();
                             }
 //get status
 
@@ -169,12 +171,37 @@ private boolean retrieveDataFromSharedPreference(){
         // get the current fragment
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_fl);
         if (currentFragment instanceof NoCheckedInGuestFragment ||currentFragment instanceof CheckInPopulatedStateFragment) {
-            finish();
+            exitAppAlertDialog();
         } else {
-            super.onBackPressed();
+
+           exitAppAlertDialog();
         }
     }
+    public void exitAppAlertDialog(){
 
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure you want to exit the app");
+            builder.setCancelable(true);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                finish();
+
+                }
+            })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setTitle("Please Confirm");
+            alertDialog.show();
+
+    }
     //function to get current fragment
     Fragment getCurrentFragment(){
         return getSupportFragmentManager().findFragmentById(R.id.fragment_container_fl);

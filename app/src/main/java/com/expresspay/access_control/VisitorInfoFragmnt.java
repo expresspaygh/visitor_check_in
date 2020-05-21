@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
     private ImageButton cancel;
     private Button checkedOutBtn;
     private GuestCheckedInData selectedGuest;
+    private ProgressBar spinner;
     GuestAdapter.GuestDataViewHolder viewHolder;
 
     public VisitorInfoFragmnt(GuestCheckedInData selectedGuest , GuestAdapter.GuestDataViewHolder viewHolder) {
@@ -53,6 +55,7 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
         passNum = view.findViewById(R.id.passNum_tv);
         checkedOutBtn = view.findViewById(R.id.checked_out_btn);
         cancel = view.findViewById(R.id.cancel);
+        spinner = view.findViewById(R.id.spinner);
         return view;
     }
 
@@ -75,8 +78,8 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 if(!selectedGuest.isCheckedOut()){
-
-                     viewHolder.updateCheckedInGuests(selectedGuest,false);
+                    spinner.setVisibility(View.VISIBLE);
+                    viewHolder.checkGuestOutFromApi(false);
                     dismiss();
 
                 }else {

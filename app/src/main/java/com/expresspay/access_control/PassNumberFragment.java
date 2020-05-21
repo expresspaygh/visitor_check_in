@@ -1,5 +1,7 @@
 package com.expresspay.access_control;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
@@ -102,7 +105,7 @@ public class PassNumberFragment extends Fragment {
                     guestCheckedInData.setVisitorPhone(checkInData.getVisitorPhone());
                     guestCheckedInData.setStaffName(checkInData.getStaffName());
                     guestCheckedInData.setPurpose(checkInData.getPurpose());
-                    guestCheckedInData.setPassNumber(checkInData.getPassNumber());
+                    guestCheckedInData.setPassNumber(passNum);
                     guestCheckedInData.setCheckedInTime(currentTime);
                     guestCheckedInData.setCheckedOutTime("");
                     guestCheckedInData.setCheckedOut(false);
@@ -113,6 +116,7 @@ public class PassNumberFragment extends Fragment {
                 }
                 else {
                     Toast.makeText(v.getContext(), "Pass Number  Not Filled ", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -123,6 +127,33 @@ public class PassNumberFragment extends Fragment {
 
         return !passNum.isEmpty();
         }
+
+        private void checkInGuestAlertDialog(String dialogMessage){
+        if(dialogMessage == null){
+            dialogMessage = "Checking In a guest failed ";
+        }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(dialogMessage);
+            builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    postDataToApi();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            //creating dialog box
+           AlertDialog alert = builder.create();
+           alert.setTitle("Error");
+           alert.show();
+
+        }
+
+
 
         private void saveToDataBase(){
         spinner.setVisibility(View.GONE);
@@ -198,6 +229,7 @@ public class PassNumberFragment extends Fragment {
                                if(status.equals("0")){
                                    saveToDataBase();
                                }else {
+                                   checkInGuestAlertDialog(message);
                                    Log.e("Message","message"+ " " + message);
                                }
 
@@ -214,6 +246,7 @@ public class PassNumberFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Error message", "Something is wrong" + error.getMessage());
+                    checkInGuestAlertDialog(null);
                 }
             }
             ){
@@ -226,9 +259,9 @@ public class PassNumberFragment extends Fragment {
                     params.put("visitor_phone",guestCheckedInData.getVisitorPhone());
                     params.put("staff_name",guestCheckedInData.getStaffName());
                     params.put("purpose",guestCheckedInData.getPurpose());
-                     params.put("pass_number",guestCheckedInData.getPassNumber());
                     params.put("check_in_time",guestCheckedInData.getCheckedInTime());
                     params.put("check_out_time", guestCheckedInData.getCheckedOutTime());
+                    params.put("pass_number",guestCheckedInData.getPassNumber());
 
                     if(guestCheckedInData.isCheckedOut() == true){
                         params.put("is_checked_in","true" );

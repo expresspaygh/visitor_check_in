@@ -1,6 +1,7 @@
 package com.expresspay.access_control;
 
 
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -87,9 +89,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 break;
         }
         return viewHolder;
-        // viewHolder = new ViewHolder(view);
-//        return viewHolder;
-    }
+   }
 
 
 
@@ -176,7 +176,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     selectedGuest = ((GuestItem) consolidatedList.get(getAdapterPosition())).getGuestCheckedInData();
                     if(!selectedGuest.isCheckedOut()){
 
-                        showButtomSheetDialogFragment();
+                        showGuestCheckInInfo();
                     }
                     else {
                         showGuestCheckOutInfo();
@@ -195,14 +195,15 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         spinner.setVisibility(View.VISIBLE);
                        checkGuestOutFromApi(false);
                     }else {
-                        // do nothing
+
+
                     }
 
                 }
             });
         }
      //   boolean undo = true;
-        private void checkGuestOutFromApi(final boolean undo){
+        public void checkGuestOutFromApi(final boolean undo){
             //GET parameters
             HashMap<String,String> params = new HashMap<String, String>();
 
@@ -249,11 +250,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 String message = response.getString("message");
                                 if(status.equals("0")){
 
-
+                                    spinner.setVisibility(View.VISIBLE);
                                     if (!undo) {
                                         updateCheckedInGuests(selectedGuest,false);
                                           }else {
-                                        spinner.setVisibility(View.VISIBLE);
+
                                         updateCheckedInGuests(selectedGuest,true);
 
                                     }
@@ -263,6 +264,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
                                 }else {
+                                    checkOutGuestAlertDialog(message);
                                     Log.e("Message","message"+ " " + message);
                                 }
 
@@ -278,6 +280,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    checkOutGuestAlertDialog(null);
                     Log.e("Error message", "Something is wrong" + error.getMessage());
                 }
             }
@@ -305,7 +308,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         selectedGuest.setCheckedOutTime(CheckOutCurrentTime);
                         params.put("check_out_time",selectedGuest.getCheckedOutTime());
                     }
-                    
+
                     if(selectedGuest.isCheckedOut() == true){
                         params.put("is_checked_out","false" );
                     }else{
@@ -318,6 +321,34 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             };
 
             requestQueue.add(jsonObjectRequest);
+
+        }
+        private void checkOutGuestAlertDialog(String dialogMessage){
+            if(dialogMessage == null){
+                dialogMessage = "Checking Out a guest failed ";
+
+            }
+
+
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(dialogMessage);
+            builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    checkGuestOutFromApi(false);
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                }
+            });
+                //creating dialog box
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("Error");
+                    alert .show();
 
         }
 
@@ -364,7 +395,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         }
         //function to show the bottom sheet dialog fragment(ie. VisitorInfoFragment)
-        public void showButtomSheetDialogFragment(){
+        public void showGuestCheckInInfo(){
             VisitorInfoFragmnt visitorInfoFragmnt = new VisitorInfoFragmnt(selectedGuest, (GuestDataViewHolder) viewHolder);
             visitorInfoFragmnt.show(context.getSupportFragmentManager(), visitorInfoFragmnt.getTag());
             notifyDataSetChanged();
