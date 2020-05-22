@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.expresspay.access_control.dialog.FullScreenDialog;
 import com.expresspay.access_control.models.DateItem;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.expresspay.access_control.models.GuestItem;
@@ -153,7 +155,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private MaterialLetterIcon letterIcon;
         private ImageView checkOutGuestIcon;
         private View itemView;
-        private ProgressBar spinner;
+
 
         public GuestDataViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -165,7 +167,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             textViewCheckedTime = itemView.findViewById(R.id.checked_time_tv);
             letterIcon = itemView.findViewById(R.id.letterIcon);
             checkOutGuestIcon = itemView.findViewById(R.id.user_x);
-            spinner = itemView.findViewById(R.id.spinner);
+
 
 
 
@@ -192,8 +194,9 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
                     if(!selectedGuest.isCheckedOut()){
-                        spinner.setVisibility(View.VISIBLE);
+                       fullScreenDialog();
                        checkGuestOutFromApi(false);
+
                     }else {
 
 
@@ -202,7 +205,14 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
         }
-     //   boolean undo = true;
+
+      DialogFragment dialog = new FullScreenDialog();
+      private void fullScreenDialog(){
+
+          dialog.show(context.getSupportFragmentManager(),"dialog");
+      }
+
+      //   boolean undo = true;
         public void checkGuestOutFromApi(final boolean undo){
             //GET parameters
             HashMap<String,String> params = new HashMap<String, String>();
@@ -249,10 +259,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 String status = response.getString("status");
                                 String message = response.getString("message");
                                 if(status.equals("0")){
-
-                                    spinner.setVisibility(View.VISIBLE);
+                                    dialog.dismiss();
+                                  
                                     if (!undo) {
                                         updateCheckedInGuests(selectedGuest,false);
+
                                           }else {
 
                                         updateCheckedInGuests(selectedGuest,true);
@@ -402,7 +413,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         //function to update the database
         public void updateCheckedInGuests(final GuestCheckedInData selectedGuest,final boolean undo){
-            spinner.setVisibility(View.GONE);
+
 
             Realm realm = Realm.getDefaultInstance();
 
@@ -473,7 +484,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    spinner.setVisibility(View.VISIBLE);
+                   fullScreenDialog();
                   checkGuestOutFromApi(true);
 
                 }

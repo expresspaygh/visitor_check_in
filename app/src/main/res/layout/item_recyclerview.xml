@@ -60,16 +60,4 @@
         android:tint="@android:color/black"
         android:layout_marginRight="15sp"/>
 
-    <ProgressBar
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:progressDrawable="@drawable/circular_spinner"
-        style="@style/Spinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,4 +46,8 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="FullScreenDialog" parent="Theme.AppCompat.Light.DialogWhenLarge">
+       <item name="windowNoTitle">true</item>
+
+    </style>
 </resources>

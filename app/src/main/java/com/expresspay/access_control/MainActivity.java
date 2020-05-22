@@ -2,6 +2,7 @@ package com.expresspay.access_control;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -21,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.expresspay.access_control.dialog.FullScreenDialog;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -40,7 +42,6 @@ import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
-    ProgressBar spinner;
 
 
     @Override
@@ -48,11 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
-
-
-        spinner = (ProgressBar)findViewById(R.id.spinner);
-
-        boolean accessDataFromSharedPreference =  retrieveDataFromSharedPreference();
+       boolean accessDataFromSharedPreference =  retrieveDataFromSharedPreference();
 
 
         if(accessDataFromSharedPreference == true){
@@ -60,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else {
-            spinner.setVisibility(View.VISIBLE);
+            fullScreenDialog();
 
             requestDataFromApi();
+
 
         }
 
@@ -95,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e("CheckTime", "GuestCheckTime" + "  " + guest.getCheckedInTime() + "  " + guest.getCheckedOutTime());
                                 }
                                 addGuestsDataToDataBase(guests);
+                                dialog.dismiss();
 
                             }else {
                                 Log.d("message","message"+" "+ message);
@@ -177,6 +176,14 @@ private boolean retrieveDataFromSharedPreference(){
            exitAppAlertDialog();
         }
     }
+
+    DialogFragment dialog = new FullScreenDialog();
+    private void fullScreenDialog(){
+
+        dialog.show(getSupportFragmentManager(),"main");
+
+    }
+
     public void exitAppAlertDialog(){
 
 
@@ -208,7 +215,7 @@ private boolean retrieveDataFromSharedPreference(){
     }
 
     private void loadAppropriateFragment(){
-        spinner.setVisibility(View.GONE);
+
       if(areGuestsCheckedIn()){
 
             Fragment fragmentGuest = new CheckInPopulatedStateFragment();

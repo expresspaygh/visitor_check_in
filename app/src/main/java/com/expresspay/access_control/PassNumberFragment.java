@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.expresspay.access_control.dialog.FullScreenDialog;
 import com.expresspay.access_control.models.CheckInData;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.google.android.material.textfield.TextInputEditText;
@@ -48,7 +49,7 @@ public class PassNumberFragment extends Fragment {
     private ImageButton backButton;
     private Button checkInButton;
     private TextInputEditText passNumber;
-    private ProgressBar spinner;
+
 
     private String  passNum ;
     private CheckInData checkInData;
@@ -72,7 +73,7 @@ public class PassNumberFragment extends Fragment {
         backButton= view.findViewById(R.id.back_imageButton);
         checkInButton = view.findViewById(R.id.checkedIn_btn);
         passNumber = view.findViewById(R.id.pass_Edt);
-        spinner = view.findViewById(R.id.spinner);
+
         return view;
     }
 
@@ -110,7 +111,7 @@ public class PassNumberFragment extends Fragment {
                     guestCheckedInData.setCheckedOutTime("");
                     guestCheckedInData.setCheckedOut(false);
 
-                  spinner.setVisibility(View.VISIBLE);
+                  fullScreenDialog();
                       postDataToApi();
 
                 }
@@ -127,6 +128,7 @@ public class PassNumberFragment extends Fragment {
 
         return !passNum.isEmpty();
         }
+
 
         private void checkInGuestAlertDialog(String dialogMessage){
         if(dialogMessage == null){
@@ -154,9 +156,12 @@ public class PassNumberFragment extends Fragment {
         }
 
 
+private void fullScreenDialog(){
+        DialogFragment dialog = new FullScreenDialog();
+        dialog.show(getFragmentManager(),"tag");
 
+}
         private void saveToDataBase(){
-        spinner.setVisibility(View.GONE);
 
         checkInData.setPassNumber( passNum );
             Log.e("anything", "saveToDataBase: " + checkInData.getVisitorName());
