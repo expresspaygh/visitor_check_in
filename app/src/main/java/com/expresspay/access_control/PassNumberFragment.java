@@ -67,7 +67,7 @@ public class PassNumberFragment extends Fragment {
     @Nullable
     @Override
 
-
+//define the view objects
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_passnumber,container,false);
         backButton= view.findViewById(R.id.back_imageButton);
@@ -122,14 +122,14 @@ public class PassNumberFragment extends Fragment {
             }
         });
   }
-
+//checks if the field is empty or not
         private boolean validate(){
         passNum = passNumber.getText().toString();
 
         return !passNum.isEmpty();
         }
 
-
+//displays an alert dialog
         private void checkInGuestAlertDialog(String dialogMessage){
         if(dialogMessage == null){
             dialogMessage = "Checking In a guest failed ";
@@ -155,14 +155,16 @@ public class PassNumberFragment extends Fragment {
 
         }
 
-
+//function for full screen dialog
 private void fullScreenDialog(){
         DialogFragment dialog = new FullScreenDialog();
         dialog.show(getFragmentManager(),"tag");
 
 }
-        private void saveToDataBase(){
 
+private void saveToDataBase(){
+//set the pass number after the user fills
+// and then save it to the local database including the other fields set
         checkInData.setPassNumber( passNum );
             Log.e("anything", "saveToDataBase: " + checkInData.getVisitorName());
             Log.e("anything", "saveToDataBase: " + checkInData.getVisitorPhone());
@@ -198,6 +200,7 @@ private void fullScreenDialog(){
 
         }
 
+        //function to post the request to the api server
         private void postDataToApi() {
         //GET parameters
             HashMap<String,String> params = new HashMap<String, String>();
@@ -221,7 +224,7 @@ private void fullScreenDialog(){
             JSONObject parameters = new JSONObject(params);
 
 
-            String server_url = getString(R.string.check_in_url);
+            String server_url = AppConstants.BASE_URL+"?request="+AppConstants.CHECK_IN_GUEST+"&api_access_key="+AppConstants.API_ACCESS_KEY;
             final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, parameters,
                     new Response.Listener<JSONObject>() {

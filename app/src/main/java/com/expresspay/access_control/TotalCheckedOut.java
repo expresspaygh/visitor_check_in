@@ -130,10 +130,12 @@ public class TotalCheckedOut extends Fragment {
         adapter.filterGuestDataList(consolidatedList);
     }
 
+//function to fetch guests data from the api server
+    //add to the local database
 
     private void fetchGuestDataFromApi(){
         pullToRefresh.setRefreshing(true);
-        String server_url = getString(R.string.base_url);
+        String server_url = AppConstants.BASE_URL+"?request="+AppConstants.GET_ALL_GUESTS+"&api_access_key="+AppConstants.API_ACCESS_KEY;
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
                 new Response.Listener<JSONObject>() {
@@ -187,7 +189,7 @@ public class TotalCheckedOut extends Fragment {
 
 
 
-
+//function to update the local db
     Realm realm = Realm.getDefaultInstance();
     private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
         pullToRefresh.setRefreshing(false);
@@ -204,7 +206,7 @@ public class TotalCheckedOut extends Fragment {
 
 
     }
-
+//fetching the checkOut Guests from the local db
     public void fetchCheckedOutGuest() {
         //create an instance of the realm
         Realm realm = Realm.getDefaultInstance();
@@ -229,6 +231,9 @@ public class TotalCheckedOut extends Fragment {
         pullToRefresh.setRefreshing(false);
 
     }
+
+    //function to group guests data into Hash map(key,value)
+//key = checkInTime && value =  guest data
 
     private HashMap<String, List<GuestCheckedInData>>
     groupDataIntoHashMap(List<GuestCheckedInData> guestDataList) {

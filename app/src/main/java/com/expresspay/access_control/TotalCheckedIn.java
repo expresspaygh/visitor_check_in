@@ -66,7 +66,7 @@ public class TotalCheckedIn extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_total_checked_in, container, false);
-
+//reference the objects
         searchList = view.findViewById(R.id.searchList);
         checkedInRecyclerView = view.findViewById(R.id.checkedIn_recyclerVew);
         pullToRefresh = view.findViewById(R.id.pullToRefresh);
@@ -94,7 +94,7 @@ public class TotalCheckedIn extends Fragment {
         //set adapter to this recycler view
         checkedInRecyclerView.setAdapter(adapter);
 
-
+//update the list items from the database
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -102,7 +102,7 @@ public class TotalCheckedIn extends Fragment {
             }
         });
 
-
+//search through the guests lists using their names
         searchList.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -121,6 +121,7 @@ public class TotalCheckedIn extends Fragment {
         });
 
     }
+    //function to filter the guestsLists data
     private void filterGuestData(String text){
         List<GuestCheckedInData> filteredGuestList = new ArrayList<>();
 
@@ -143,11 +144,12 @@ public class TotalCheckedIn extends Fragment {
 
     }
 
-
+//function to fetch guests data from the api server
+    //add to the local database
     private void fetchGuestDataFromApi(){
         pullToRefresh.setRefreshing(true);
 
-        String server_url = getString(R.string.base_url);
+        String server_url = AppConstants.BASE_URL+"?request="+AppConstants.GET_ALL_GUESTS+"&api_access_key="+AppConstants.API_ACCESS_KEY;
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
                 new Response.Listener<JSONObject>() {
@@ -202,7 +204,7 @@ public class TotalCheckedIn extends Fragment {
 
 
 
-
+//function to update the local database
     Realm realm = Realm.getDefaultInstance();
     private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
         pullToRefresh.setRefreshing(false);
@@ -218,7 +220,7 @@ public class TotalCheckedIn extends Fragment {
     }
 
 
-
+//function to fetch checkIn data from the database
     public void fetchCheckedInGuests(){
 
         Realm realm = Realm.getDefaultInstance();
@@ -245,7 +247,8 @@ public class TotalCheckedIn extends Fragment {
     }
 
 
-
+//function to group guests data into Hash map(key,value)
+//key = checkInTime && value =  guest data
     private HashMap<String,List<GuestCheckedInData>>
     groupDataIntoHashMap(List<GuestCheckedInData> guestDataList) {
 

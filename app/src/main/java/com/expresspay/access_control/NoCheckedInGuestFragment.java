@@ -23,7 +23,7 @@ public class NoCheckedInGuestFragment extends Fragment {
          floatingBtn = view.findViewById(R.id.fab);
         return view;
     }
-
+//image button is set to navigate to CheckInActivity class
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

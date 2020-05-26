@@ -40,10 +40,15 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
 
 
+    //calls this function as soon as this activity starts
+    //display the appropriate fragment if there is a guest being checked in or not in the api server
+    //stores the data from the api using shared preferences
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
@@ -65,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+//function to fetch guest data from the api server
+    //and then add to the local realm database
     private void requestDataFromApi(){
-        String server_url = getString(R.string.base_url);
+        String server_url = AppConstants.BASE_URL+"?request="+AppConstants.GET_ALL_GUESTS+"&api_access_key="+AppConstants.API_ACCESS_KEY;
+        Log.e("url_response", "requestDataFromApi:"+ server_url);
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
                 new Response.Listener<JSONObject>() {
@@ -125,25 +132,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//function to save guest data to sharedPreference after making the api call
 
-    public  String key = "SyncedLocalDataBaseWithServer";
     private void saveDataToSharedPreference(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPref",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(key,true);
+        editor.putBoolean(AppConstants.SHARED_PREFERENCE_KEY,true);
         editor.apply();
 
 }
 
-
+//function to get data from sharedPreference
 private boolean retrieveDataFromSharedPreference(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-    return  sharedPreferences.getBoolean(key,false);
+    return  sharedPreferences.getBoolean(AppConstants.SHARED_PREFERENCE_KEY,false);
 
 
 }
 
-
+//function to add Guest data to the local database
     private void addGuestsDataToDataBase(final List<GuestCheckedInData> guests){
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
@@ -184,6 +191,7 @@ private boolean retrieveDataFromSharedPreference(){
 
     }
 
+    //function to display an alert box if a user is exiting the app
     public void exitAppAlertDialog(){
 
 
@@ -214,6 +222,9 @@ private boolean retrieveDataFromSharedPreference(){
         return getSupportFragmentManager().findFragmentById(R.id.fragment_container_fl);
     }
 
+
+    //either CheckInPopulated or NoCheckIn guests is loaded to the fragment
+    //noCheckInGuest if no guest is found or checked in and vice versa
     private void loadAppropriateFragment(){
 
       if(areGuestsCheckedIn()){
@@ -231,9 +242,6 @@ private boolean retrieveDataFromSharedPreference(){
     @Override
     protected void onResume() {
         super.onResume();
-
-
-
 
         //get current fragment
         boolean b = getCurrentFragment() instanceof NoCheckedInGuestFragment;
@@ -277,10 +285,6 @@ private boolean retrieveDataFromSharedPreference(){
         final RealmResults<GuestCheckedInData> guestCheckedInData = realm.where(GuestCheckedInData.class).findAll();
         Log.e("Data", "onResume: " + guestCheckedInData.size());
 
-        if (guestCheckedInData.size() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return guestCheckedInData.size() != 0;
     }
 }

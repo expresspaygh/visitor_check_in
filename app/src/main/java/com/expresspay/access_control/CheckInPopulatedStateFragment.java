@@ -50,7 +50,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
 
 
     }
-
+//make all your view items references here
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,6 +67,8 @@ public class CheckInPopulatedStateFragment extends Fragment {
 
     }
 
+    //create a tabLayout for both counts and fragments
+    //add viewPager for both views
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -94,7 +96,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
             }
         });
 
-
+//navigate to CheckInActivity once the imageButton is clicked
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,8 +118,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
                 if (scrollRange + verticalOffset == 0) {
                     //set  title only if the toolbar is collapsed
                     collapsingToolbar.setTitle("expressPay");
-                    //  toolbar.setTitleTextColor(Color.WHITE);
-                    // toolbar.setTitleTextColor(0xFFFFFF);
+
                 } else if (!isShow) {
                     //set the title to an empty string to hide it
                     //when the toolbar is expanded
@@ -135,7 +136,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
     }
 
 
-
+//calls this method if the user returns to this activity
     @Override
     public void onResume() {
         super.onResume();
@@ -154,7 +155,7 @@ public class CheckInPopulatedStateFragment extends Fragment {
                 .equalTo("checkedOut", false)
                 .findAll().size();
 
-        // fetch checkedUut users from the database and check the size
+        // fetch checkedOut users from the database and check the size
         // the size is equal to the number of items
         final int guestCheckedOutDataCount = realm.where(GuestCheckedInData.class)
                 .equalTo("checkedOut", true)

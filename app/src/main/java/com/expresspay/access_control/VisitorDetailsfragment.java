@@ -18,7 +18,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 
 public class VisitorDetailsfragment extends Fragment {
-
+//define objects
     private ImageButton backButton;
     private Button nextButton;
     private TextInputEditText nameEdt;
@@ -32,6 +32,7 @@ public class VisitorDetailsfragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_visitor__details, container, false);
+       //reference view objects
         backButton = view.findViewById(R.id.back_imageButton);
         nextButton = view.findViewById(R.id.visitorButton_btn);
         nameEdt = view.findViewById(R.id.name_edt);
@@ -67,7 +68,7 @@ public class VisitorDetailsfragment extends Fragment {
 
 
     }
-
+//check if all the fields are empty or not
     private boolean validate() {
         name = nameEdt.getText().toString();
         number = numberEdt.getText().toString();

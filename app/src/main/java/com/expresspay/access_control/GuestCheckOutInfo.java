@@ -37,6 +37,7 @@ public class GuestCheckOutInfo extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.guest_checkout_info,container,false);
+        //reference all the objects
         selectedName = view.findViewById(R.id.selectedName);
         checkInTime = view.findViewById(R.id.checkedIn_time_tv);
         checkOutTime = view.findViewById(R.id.checkedOut_time_tv);
@@ -50,6 +51,7 @@ public class GuestCheckOutInfo extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //calls the function that set the objects fields
         settingFields();
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +63,7 @@ public class GuestCheckOutInfo extends BottomSheetDialogFragment {
         });
     }
 
+    //function to set all the items of a selected guest in totalCheckOut c
     public void settingFields(){
         String formattedTime = formatTime((selectedGuest.getCheckedOutTime()));
         String formatTime = formatTime(selectedGuest.getCheckedInTime());
@@ -73,6 +76,7 @@ public class GuestCheckOutInfo extends BottomSheetDialogFragment {
         purpose.setText(selectedGuest.getPurpose());
     }
 
+    //function to format the date
     String formatTime(String dateTime){
         String formattedTime;
         try {

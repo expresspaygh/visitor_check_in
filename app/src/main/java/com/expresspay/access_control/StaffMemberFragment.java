@@ -71,7 +71,7 @@ public class StaffMemberFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+//navigate ti the next fragment after validating
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +94,7 @@ public class StaffMemberFragment extends Fragment {
             }
         });
 
-
+//setting the radio buttons
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -125,6 +125,8 @@ public class StaffMemberFragment extends Fragment {
     }
 
 
+//navigate to th next fragment after the user fills the fields required
+    //set the staffName && the purpose
     private void navigate() {
 
 
@@ -148,7 +150,7 @@ public class StaffMemberFragment extends Fragment {
 
         transactionPassNumber.commit();
     }
-
+// check if the fields are empty or not
     private boolean validate() {
         staffName = staffTextInputEditText.getText().toString();
         purpose = otherTextInputEditText.getText().toString();
@@ -168,11 +170,8 @@ public class StaffMemberFragment extends Fragment {
             }
 
             // check if staff name is empty
-            if (staffName.isEmpty()) {
-                return false;
-            }
+            return !staffName.isEmpty();
         }
-        return true;
     }
 
 

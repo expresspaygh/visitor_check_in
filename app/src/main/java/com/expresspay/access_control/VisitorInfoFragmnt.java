@@ -12,9 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.expresspay.access_control.dialog.FullScreenDialog;
 import com.expresspay.access_control.models.GuestCheckedInData;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
+    //define all the objects
     private TextView selectedName,checkInTime,staffName,purpose,passNum;
     private ImageButton cancel;
     private Button checkedOutBtn;
@@ -48,6 +51,7 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_visitor_info,container,false);
+       //reference the view objects
         selectedName = view.findViewById(R.id.selectedName);
         checkInTime = view.findViewById(R.id.checkedIn_time_tv);
         staffName = view.findViewById(R.id.staff_name_tv);
@@ -78,7 +82,7 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 if(!selectedGuest.isCheckedOut()){
-                    spinner.setVisibility(View.VISIBLE);
+                    fullScreenDialog();
                     viewHolder.checkGuestOutFromApi(false);
                     dismiss();
 
@@ -92,7 +96,7 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
 
 
     }
-
+// set all the checkIn fields
     public void settingFields(){
         String formattedTime = formatTime((selectedGuest.getCheckedInTime()));
 
@@ -102,7 +106,7 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
         passNum.setText(selectedGuest.getPassNumber());
         purpose.setText(selectedGuest.getPurpose());
     }
-
+//function for formatting date
     String formatTime(String dateTime){
         String formattedTime;
         try {
@@ -116,5 +120,11 @@ public class VisitorInfoFragmnt extends BottomSheetDialogFragment {
         return formattedTime;
     }
 
+    //shows a full screen dialog with a spinner
+    DialogFragment dialog = new FullScreenDialog();
+    private void fullScreenDialog(){
+
+        dialog.show(getFragmentManager(),"info");
+    }
 
 }

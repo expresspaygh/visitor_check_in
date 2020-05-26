@@ -12,6 +12,8 @@ import android.widget.Toast;
 public class CheckInActivity extends AppCompatActivity {
     MainActivity activity;
 
+//this method is called as soon as the activity start
+    //create an instance of a fragment and add visitorDetailsfragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,8 @@ public class CheckInActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        // get the current fragment
+        // getting the current fragment
+        //the first fragment is getting is VisitorDetailsFragment
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container_fl);
         if (currentFragment instanceof VisitorDetailsfragment) {
             finish();

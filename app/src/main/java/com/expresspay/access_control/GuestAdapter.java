@@ -62,7 +62,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.consolidatedList = consolidatedList;
         this.context = context;
     }
-
+//method to get the guestsData items
     @Override
     public int getItemViewType(int position) {
         return consolidatedList.get(position).getType();
@@ -78,7 +78,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
+//displays the date and guestList recyclerview items
         switch (viewType){
             case ListItem.TYPE_GUEST_DATA:
                 View view = inflater.inflate(R.layout.item_recyclerview,parent,false);
@@ -97,12 +97,12 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        //bind the data to the view (Recycler_item.xml) objects
+        //bind the data to the views(Recycler_item.xml) objects and (date_item.xml)
 
         switch (holder.getItemViewType()){
             case ListItem.TYPE_GUEST_DATA:
                 ((GuestDataViewHolder) holder).bindView(position);
-//
+
                 break;
 
             case ListItem.TYPE_DATE:
@@ -125,7 +125,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         // tell the adapter that the dataSet/list has changed to it should update itself
         notifyDataSetChanged();
     }
-
+//define references of the date_recycler_items
     public  class DateViewHolder extends RecyclerView.ViewHolder{
         private TextView textViewDate;
 
@@ -170,7 +170,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
 
-
+//shows either checkIn or checkOut guests details
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,7 +185,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
             });
-
+//this button checks out a selected guest from the api
+            //undo action uncheck the selected guest
             checkOutGuestIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -205,14 +206,16 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
         }
-
+//shows a full screen dialog with a spinner
       DialogFragment dialog = new FullScreenDialog();
       private void fullScreenDialog(){
 
           dialog.show(context.getSupportFragmentManager(),"dialog");
       }
 
-      //   boolean undo = true;
+  //make an api call
+      //set all the params
+      //check out a selected guests
         public void checkGuestOutFromApi(final boolean undo){
             //GET parameters
             HashMap<String,String> params = new HashMap<String, String>();
@@ -247,7 +250,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             JSONObject parameters = new JSONObject(params);
 
 
-            String server_url = "http://10.0.2.2/exp-iris/api/iris.php?request=update_guest";
+            String server_url = AppConstants.BASE_URL+"?request="+AppConstants.UPDATE_GUEST+"&api_access_key="+AppConstants.API_ACCESS_KEY  ;
             final RequestQueue requestQueue = Volley.newRequestQueue(context);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, parameters,
                     new Response.Listener<JSONObject>() {
@@ -334,16 +337,13 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             requestQueue.add(jsonObjectRequest);
 
         }
+        //shows alert message if it fails to check out a guest in the api server
         private void checkOutGuestAlertDialog(String dialogMessage){
             if(dialogMessage == null){
                 dialogMessage = "Checking Out a guest failed ";
 
             }
-
-
-
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+     AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(dialogMessage);
             builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
                 @Override
@@ -478,7 +478,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return formattedTime;
         }
 
-        //create a method for the snackBar
+        //function to show a snackBar
         void showSuccessSnackBar(){
             Snackbar snackbar = Snackbar.make(itemView,"Guest Checked Out",Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", new View.OnClickListener() {
