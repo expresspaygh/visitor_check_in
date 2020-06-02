@@ -224,7 +224,7 @@ private void saveToDataBase(){
             JSONObject parameters = new JSONObject(params);
 
 
-            String server_url = AppConstants.BASE_URL+"?request="+AppConstants.CHECK_IN_GUEST+"&api_access_key="+AppConstants.API_ACCESS_KEY;
+            String server_url = AppConstants.BASE_URL+"?request="+AppConstants.CHECK_IN_GUEST;
             final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, parameters,
                     new Response.Listener<JSONObject>() {
@@ -279,6 +279,13 @@ private void saveToDataBase(){
 
         Log.e("params", "params"+ params);
                     return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map <String,String> headers = new HashMap<>();
+                    headers.put("x-api-key" ,  AppConstants.API_ACCESS_KEY);
+                    return headers;
                 }
             };
 

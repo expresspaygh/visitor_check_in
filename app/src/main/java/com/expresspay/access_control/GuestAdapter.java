@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -250,7 +251,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             JSONObject parameters = new JSONObject(params);
 
 
-            String server_url = AppConstants.BASE_URL+"?request="+AppConstants.UPDATE_GUEST+"&api_access_key="+AppConstants.API_ACCESS_KEY  ;
+            String server_url = AppConstants.BASE_URL+"?request="+AppConstants.UPDATE_GUEST ;
             final RequestQueue requestQueue = Volley.newRequestQueue(context);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, parameters,
                     new Response.Listener<JSONObject>() {
@@ -298,7 +299,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Log.e("Error message", "Something is wrong" + error.getMessage());
                 }
             }
-            ){
+            )
+            {
                 @Override
                 protected Map<String, String> getParams()  {
 
@@ -331,6 +333,13 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                     Log.e("params", "params"+ params);
                     return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map <String,String> headers = new HashMap<>();
+                    headers.put("x-api-key" ,  AppConstants.API_ACCESS_KEY);
+                    return headers;
                 }
             };
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -35,7 +36,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 //function to fetch guest data from the api server
     //and then add to the local realm database
     private void requestDataFromApi(){
-        String server_url = AppConstants.BASE_URL+"?request="+AppConstants.GET_ALL_GUESTS+"&api_access_key="+AppConstants.API_ACCESS_KEY;
+        String server_url = AppConstants.BASE_URL+"?request="+AppConstants.GET_ALL_GUESTS;
         Log.e("url_response", "requestDataFromApi:"+ server_url);
         final RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url, null,
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }else {
                                 Log.d("message","message"+" "+ message);
+                                dialog.dismiss();
                                loadAppropriateFragment();
                             }
 //get status
@@ -124,11 +128,16 @@ public class MainActivity extends AppCompatActivity {
                // loadAppropriateFragment();
             }
         }
-        );
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map <String,String> headers = new HashMap<>();
+                headers.put("x-api-key" ,  AppConstants.API_ACCESS_KEY);
+                return headers;
+            }
+        };
 
         requestQueue.add(jsonObjectRequest);
-
-
 
     }
 

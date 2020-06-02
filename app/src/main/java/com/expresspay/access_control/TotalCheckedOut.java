@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -181,7 +183,15 @@ public class TotalCheckedOut extends Fragment {
                 Log.e("Error message", "Something is wrong" + error);
 
             }
-        });
+        })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map <String,String> headers = new HashMap<>();
+                headers.put("x-api-key" ,  AppConstants.API_ACCESS_KEY);
+                return headers;
+            }
+        };
 
         requestQueue.add(jsonObjectRequest);
 
