@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Guest Check-In Application</string>
+    <string name="app_name">Iris</string>
     <string name="checked_in">No Checked In Guest</string>
     <string name="button_check_in">Tab the button to check in a guest</string>
     <string name="visitor">Visitor Details</string>

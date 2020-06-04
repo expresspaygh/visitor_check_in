@@ -5,10 +5,11 @@
     <item android:drawable="@color/white"/>
     <item>
 
-        <bitmap android:src="@drawable/logo"
+        <bitmap
             android:gravity="center"
+            android:src="@drawable/splash_screen_logo"
 
-           />
+            />
   </item>
 
 
